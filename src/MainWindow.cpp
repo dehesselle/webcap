@@ -198,7 +198,12 @@ void MainWindow::on_documentList_itemSelectionChanged()
 {
    QListWidgetItem *item = ui->documentList->currentItem();
 
-   previewDocument("D:/Temp/" + item->text());
+
+   /*TODO need to think about are more elegant way then to always call
+    * the respective initSettings() function
+    */
+   previewDocument(m_settings.value(HtmlToPdf::INI_PDF_DIR).toString() +
+                   "/" + item->text());
 }
 
 void MainWindow::on_clipboardChanged(const QString &url)
