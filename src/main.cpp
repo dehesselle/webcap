@@ -20,6 +20,8 @@
 #include "IniFile.hpp"
 #include "Version.hpp"
 #include <QApplication>
+#include <QCoreApplication>
+#include <QFileInfo>
 
 #define ELPP_QT_LOGGING
 #define ELPP_THREAD_SAFE
@@ -28,26 +30,82 @@
 
 INITIALIZE_EASYLOGGINGPP
 
+// order represents log hierarchy
+static const char *INI_LOG_TRACE   = "main/logTrace";
+static const char *INI_LOG_DEBUG   = "main/logDebug";
+static const char *INI_LOG_VERBOSE = "main/logVerbose";
+static const char *INI_LOG_INFO    = "main/logInfo";
+static const char *INI_LOG_WARNING = "main/logWarning";
+static const char *INI_LOG_ERROR   = "main/logError";
+static const char *INI_LOG_FATAL   = "main/logFatal";
+static const char *INI_LOG_FORMAT  = "main/logFormat";
+
 int main(int argc, char *argv[])
 {
    QApplication a(argc, argv);
 
-   {  // setup logging
+   // setup logging
+   {
       IniFile settings;
+
+      // create defaults if they don't exist
+      {
+         if (not settings.contains(INI_LOG_TRACE))
+            settings.setValue(INI_LOG_TRACE, "false");
+         if (not settings.contains(INI_LOG_DEBUG))
+            settings.setValue(INI_LOG_DEBUG, "false");
+         if (not settings.contains(INI_LOG_VERBOSE))
+            settings.setValue(INI_LOG_VERBOSE, "false");
+         if (not settings.contains(INI_LOG_INFO))
+            settings.setValue(INI_LOG_INFO, "true");
+         if (not settings.contains(INI_LOG_WARNING))
+            settings.setValue(INI_LOG_WARNING, "true");
+         if (not settings.contains(INI_LOG_ERROR))
+            settings.setValue(INI_LOG_ERROR, "true");
+         if (not settings.contains(INI_LOG_FATAL))
+            settings.setValue(INI_LOG_FATAL, "true");
+         if (not settings.contains(INI_LOG_FORMAT))
+            settings.setValue(INI_LOG_FORMAT, "%datetime %level [%func] %msg");
+      }
+
+      QString logfile =
+            settings.getPath() + "/" +
+            QFileInfo(QCoreApplication::applicationFilePath()).baseName() +
+            "/" + ".log";
 
       el::Configurations config;
       config.setToDefault();
-      //TODO logfile name from application name, not hard-coded
+
       config.setGlobally(el::ConfigurationType::Filename,
-                         QString(settings.getPath() + "/WebCap.log").toStdString());
-      config.setGlobally(el::ConfigurationType::Format, "%datetime %level [%func] %msg");
+                         logfile.toStdString());
+      config.setGlobally(el::ConfigurationType::Format,
+            settings.value(INI_LOG_FORMAT).toString().toStdString());
+      config.setGlobally(el::ConfigurationType::ToFile, "true");
+
+      config.set(el::Level::Trace, el::ConfigurationType::Enabled,
+                 settings.value(INI_LOG_TRACE).toString().toStdString());
+      config.set(el::Level::Debug, el::ConfigurationType::Enabled,
+                 settings.value(INI_LOG_DEBUG).toString().toStdString());
+      config.set(el::Level::Verbose, el::ConfigurationType::Enabled,
+                 settings.value(INI_LOG_VERBOSE).toString().toStdString());
+      config.set(el::Level::Info, el::ConfigurationType::Enabled,
+                 settings.value(INI_LOG_INFO).toString().toStdString());
+      config.set(el::Level::Warning, el::ConfigurationType::Enabled,
+                 settings.value(INI_LOG_WARNING).toString().toStdString());
+      config.set(el::Level::Error, el::ConfigurationType::Enabled,
+                 settings.value(INI_LOG_ERROR).toString().toStdString());
+      config.set(el::Level::Fatal, el::ConfigurationType::Enabled,
+                 settings.value(INI_LOG_FATAL).toString().toStdString());
 
 #ifdef QT_DEBUG
+      // console logging (in addition to file) only in debug builds
       config.setGlobally(el::ConfigurationType::ToStandardOutput, "true");
+      // force log levels in debug builds
+      config.set(el::Level::Global, el::ConfigurationType::Enabled, "true");
 #else
       config.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
 #endif
-      config.setGlobally(el::ConfigurationType::ToFile, "true");
+
       el::Loggers::reconfigureAllLoggers(config);
    }
 
