@@ -37,6 +37,9 @@
 
 const char *MainWindow::INI_GEOMETRY = "MainWindow/geometry";
 const char *MainWindow::INI_SPLITTER = "MainWindow/splitter";
+const IniFile::KeyValue MainWindow::INI_AUTO_PREVIEW = {
+   "MainWindow/autoPreview", "true"
+};
 
 MainWindow::MainWindow(QWidget *parent) :
    QMainWindow(parent),
@@ -47,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
    {
       ui->setupUi(this);
 
-      ui->statusBar->showMessage("Welcome :-)", 5000);
+      ui->statusBar->showMessage("Welcome   :-)", 5000);
 
       // bug in Qt Windows port: QKeySequence::Quit is empty
       ui->actionFileQuit->setShortcut(QKeySequence(Qt::ALT + Qt::Key_F4));
@@ -152,10 +155,13 @@ void MainWindow::on_pdfCreated(HtmlToPdf *htmlToPdf)
 
    if (file.exists() and file.size())
    {
-      ui->documentList->scrollToBottom();
-      ui->documentList->setCurrentItem(item);
+      if (m_settings.value(INI_AUTO_PREVIEW).toBool())
+      {
+         ui->documentList->scrollToBottom();
+         ui->documentList->setCurrentItem(item);
+      }
+
       ui->statusBar->showMessage("creating preview");
-      previewDocument(htmlToPdf->getOutFile());
       ui->statusBar->showMessage(file.fileName() + ", " +
                                  QString::number(file.size()) + " bytes");
    }
@@ -163,6 +169,9 @@ void MainWindow::on_pdfCreated(HtmlToPdf *htmlToPdf)
    {
       item->setForeground(QColor(Qt::red).lighter());
       ui->statusBar->showMessage("error: " + file.fileName() + ".", 5000);
+      LOG(ERROR) << htmlToPdf->getUrl() << ", "
+                 << file.absoluteFilePath()
+                 << " (" << file.size() << " bytes)";
    }
 
    htmlToPdf->deleteLater();

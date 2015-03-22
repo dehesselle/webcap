@@ -42,6 +42,7 @@ public:
 
    static const char *INI_GEOMETRY;
    static const char *INI_SPLITTER;
+   static const IniFile::KeyValue INI_AUTO_PREVIEW;
 
 protected:
    void resizeEvent(QResizeEvent *event);
