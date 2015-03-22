@@ -39,39 +39,39 @@ PreferencesWindow::~PreferencesWindow()
 
 void PreferencesWindow::readSettings()
 {
-   {  // settings from HtmlToPdf
-      ui->targetDir->setText(m_settings.value(HtmlToPdf::INI_PDF_DIR).toString());
-      ui->proxyEnable->setChecked(m_settings.value(HtmlToPdf::INI_PROXY_ENABLE).toBool());
-      ui->proxyHost->setText(m_settings.value(HtmlToPdf::INI_PROXY_HOST).toString());
-      ui->proxyPort->setText(m_settings.value(HtmlToPdf::INI_PROXY_PORT).toString());
-      ui->proxyUser->setText(m_settings.value(HtmlToPdf::INI_PROXY_USER).toString());
-      ui->proxyPassword->setText(HtmlToPdf::getProxyPassword());
-
-   }
+   ui->targetDir->setText(m_settings.value(HtmlToPdf::INI_PDF_DIR).toString());
+   ui->proxyEnable->setChecked(
+            m_settings.value(HtmlToPdf::INI_PROXY_ENABLE).toBool());
+   ui->proxyHost->setText(
+            m_settings.value(HtmlToPdf::INI_PROXY_HOST).toString());
+   ui->proxyPort->setText(
+            m_settings.value(HtmlToPdf::INI_PROXY_PORT).toString());
+   ui->proxyUser->setText(
+            m_settings.value(HtmlToPdf::INI_PROXY_USER).toString());
+   ui->proxyPassword->setText(HtmlToPdf::getProxyPassword());
 
    on_proxyEnable_toggled(ui->proxyEnable->isChecked());
 }
 
 void PreferencesWindow::on_buttonTargetDir_clicked()
 {
-   ui->targetDir->setText(QFileDialog::getExistingDirectory(this, "select target directory"));
+   ui->targetDir->setText(
+            QFileDialog::getExistingDirectory(this, "select target directory"));
 }
 
 void PreferencesWindow::on_buttonOk_clicked()
 {
     QDir targetDir = ui->targetDir->text();
-
     bool isOk = true;
 
     if (targetDir.exists())
     {
        m_settings.setValue(HtmlToPdf::INI_PDF_DIR, targetDir.absolutePath());
     }
-
     else
     {
-       QMessageBox::critical(this, "invalid directory", "Directory WTF!");
-
+       QMessageBox::critical(this, "invalid directory",
+                             "The direcotry you selected does not exist.");
        isOk = false;
     }
 
@@ -82,25 +82,22 @@ void PreferencesWindow::on_buttonOk_clicked()
            ui->proxyUser->text().isEmpty() or
            ui->proxyPassword->text().isEmpty())
        {
-          QMessageBox::critical(this, "proxy settings incomplete",
-                                QString("If you want to use a proxy, provide all the data below.\n") +
-                                "If you do not want to use a proxy, uncheck the \"use proxy server\" checkbox.");
+          QMessageBox::critical(
+                   this, "proxy settings incomplete",
+                   QString("If you want to use a proxy, provide all ") +
+                   "the data below.\nIf you do not want to use a proxy, " +
+                   "uncheck the \"use proxy server\" checkbox.");
           isOk = false;
-
        }
-
-
     }
-
-    // more checks...
-
 
    if (isOk)
    {
       m_settings.setValue(HtmlToPdf::INI_PROXY_HOST, ui->proxyHost->text());
       m_settings.setValue(HtmlToPdf::INI_PROXY_PORT, ui->proxyPort->text());
       m_settings.setValue(HtmlToPdf::INI_PROXY_USER, ui->proxyUser->text());
-      m_settings.setValue(HtmlToPdf::INI_PROXY_ENABLE, QString::number(ui->proxyEnable->isChecked()));
+      m_settings.setValue(HtmlToPdf::INI_PROXY_ENABLE,
+                          QString::number(ui->proxyEnable->isChecked()));
       HtmlToPdf::setProxyPassword(ui->proxyPassword->text());   // don't save!
 
       close();
