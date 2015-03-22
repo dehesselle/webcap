@@ -19,12 +19,14 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
-#include <QMainWindow>
-#include <QGraphicsScene>
 #include "PdfPreview.hpp"
 #include "HtmlToPdf.hpp"
 #include "IniFile.hpp"
+#include <QMainWindow>
+#include <QGraphicsScene>
 #include <QListWidgetItem>
+#include <QString>
+#include <QResizeEvent>
 
 namespace Ui {
 class MainWindow;
@@ -38,28 +40,22 @@ public:
    explicit MainWindow(QWidget *parent = 0);
    ~MainWindow();
 
-
    static const char *INI_GEOMETRY;
    static const char *INI_SPLITTER;
+
 protected:
    void resizeEvent(QResizeEvent *event);
 
 private slots:
+   void on_actionFileSettings_triggered();
+   void on_actionFileShowInExplorer_triggered();
+   void on_actionFileQuit_triggered();
    void on_actionHelpAboutWebCap_triggered();
 
-   void on_actionFileQuit_triggered();
-
-   void on_pdfCreated(HtmlToPdf *htmlToPdf);
-
-   void on_documentList_itemSelectionChanged();
-
    void on_clipboardChanged(const QString &url);
-
-   void on_actionFileSettings_triggered();
-
-   void on_actionFileShowInExplorer_triggered();
-
    void on_documentList_itemDoubleClicked(QListWidgetItem *item);
+   void on_documentList_itemSelectionChanged();
+   void on_pdfCreated(HtmlToPdf *htmlToPdf);
 
 private:
    Ui::MainWindow *ui;
@@ -67,10 +63,8 @@ private:
    void previewDocument(const QString &file);
 
    QGraphicsScene *m_scene;
-
-   PdfPreview *m_pdfPreview;
-
-   IniFile m_settings;
+   PdfPreview     *m_pdfPreview;
+   IniFile         m_settings;
 };
 
 #endif // MAINWINDOW_HPP

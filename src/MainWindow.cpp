@@ -37,88 +37,77 @@
 const char *MainWindow::INI_GEOMETRY = "MainWindow/geometry";
 const char *MainWindow::INI_SPLITTER = "MainWindow/splitter";
 
-/*
- *
- * https://openclipart.org/detail/20295/Camera%20Lens
- * https://openclipart.org/detail/175844/spider%20web
- * https://openclipart.org/detail/85327/Halloween%20Spider%20Web%20Icon
- * https://openclipart.org/detail/189336/Camera%20Pictogram
- *
- *
- *
- *
- *
- *
- *
- */
-
 MainWindow::MainWindow(QWidget *parent) :
    QMainWindow(parent),
    ui(new Ui::MainWindow),
    m_scene(0)
 {
-   ui->setupUi(this);
-
-   m_pdfPreview = new PdfPreview;
-   m_scene = new QGraphicsScene(this);
-   ui->previewPicture->setScene(m_scene);
-
-
-   //hirse
-
-
-//   HtmlToPdf *h = new HtmlToPdf(this);
-//   h->setUrl("http://www.heise.de");
-
-// connect(h, &HtmlToPdf::pdfCreated, this, &MainWindow::on_pdfCreated);
-
-
-
-
-
-//   h->start();
-
-//   previewDocument(pdfFile);
-
-   // bug in Qt Windows port: QKeySequence::Quit is empty
-   ui->actionFileQuit->setShortcut(QKeySequence(Qt::ALT + Qt::Key_F4));
-
-   HtmlToPdf::initLib();
-
-   ClipboardMonitor *cmon = new ClipboardMonitor(this);
-
-   connect(cmon, &ClipboardMonitor::clipboardChanged, this, &MainWindow::on_clipboardChanged);
-
-   cmon->enable();
-
-
-   if (m_settings.value(HtmlToPdf::INI_PROXY_ENABLE).toBool())
+   // basic UI setup
    {
-      bool clickedOk = false;
+      ui->setupUi(this);
 
-      QString password = QInputDialog::getText(this, "bla", "Enter the proxy password for user X and click ok. Click cancel to disable proxy.", QLineEdit::Password,QString(),&clickedOk);
+      ui->statusBar->showMessage("Welcome :-)", 5000);
 
-      if (clickedOk)
-      {
-         HtmlToPdf::setProxyPassword(password);
-      }
-      else
-      {
-         m_settings.setValue(HtmlToPdf::INI_PROXY_ENABLE, false);
-      }
-   }
+      // bug in Qt Windows port: QKeySequence::Quit is empty
+      ui->actionFileQuit->setShortcut(QKeySequence(Qt::ALT + Qt::Key_F4));
 
-   ui->mainToolBar->hide();
-   this->setContextMenuPolicy(Qt::NoContextMenu);
-
-   ui->statusBar->showMessage("Welcome :)", 5000);
-
-   {  // restore windows position and layout
+      // restore windows position and splitter layout
       restoreGeometry(m_settings.value(INI_GEOMETRY, saveGeometry()).toByteArray());
       ui->splitter->restoreState(m_settings.value(INI_SPLITTER, ui->splitter->saveState()).toByteArray());
+
+      // hide toolbar and prevent unhiding it
+      ui->mainToolBar->hide();
+      setContextMenuPolicy(Qt::NoContextMenu);   // seems to be the only way
    }
 
-   {  // populate the document list with pre-existing PDF files
+   // setup PDF preview / graphics scene
+   {
+      m_pdfPreview = new PdfPreview;
+      m_scene = new QGraphicsScene(this);
+      ui->previewPicture->setScene(m_scene);
+   }
+
+   // setup clipboard monitor
+   {
+      ClipboardMonitor *clipboardMonitor = new ClipboardMonitor(this);
+
+      connect(clipboardMonitor, &ClipboardMonitor::clipboardChanged,
+              this, &MainWindow::on_clipboardChanged);
+
+      clipboardMonitor->enable();
+   }
+
+   // setup HTML-to-PDF converter
+   {
+      HtmlToPdf::initLib();   // initialize 3rd-party library (wkhtmltopdf)
+
+      /* Right now we're not storing the proxy password anywhere and it
+       * gets lost once you quit the application. If we detect that
+       * a proxy should be used during startup, ask for the password.
+       */
+      if (m_settings.value(HtmlToPdf::INI_PROXY_ENABLE).toBool())
+      {
+         bool clickedOk = false;
+
+         QString password = QInputDialog::getText(
+                  this,
+                  "password required",
+                  "Please enter the proxy password for user " +
+                  m_settings.value(HtmlToPdf::INI_PROXY_USER).toString() +
+                  + ".\n" + "Click cancel to disable proxy.",
+                  QLineEdit::Password,
+                  QString(),
+                  &clickedOk);
+
+         if (clickedOk)
+            HtmlToPdf::setProxyPassword(password);
+         else
+            m_settings.setValue(HtmlToPdf::INI_PROXY_ENABLE, false);
+      }
+   }
+
+   // populate the document list with pre-existing PDF files
+   {
       QDir dir(m_settings.value(HtmlToPdf::INI_PDF_DIR).toString());
       dir.setFilter(QDir::Files);
 
@@ -136,9 +125,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-// TODO: How to delete graphicsscene?
-
-   {  // save windows position and layout
+   // save window position and layout
+   {
       m_settings.setValue(INI_GEOMETRY, saveGeometry());
       m_settings.setValue(INI_SPLITTER, ui->splitter->saveState());
    }
@@ -151,18 +139,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pdfCreated(HtmlToPdf *htmlToPdf)
 {
-//   previewDocument(htmlToPdf->getOutFile());
+   previewDocument(htmlToPdf->getOutFile());
 
    QFileInfo file = htmlToPdf->getOutFile();
-
    new QListWidgetItem(file.fileName(), ui->documentList);
-
 
    htmlToPdf->deleteLater();
 
    ui->documentList->scrollToBottom();
    ui->statusBar->showMessage("Created " + file.fileName() + ".", 5000);
-
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event)
@@ -185,7 +170,6 @@ void MainWindow::on_actionHelpAboutWebCap_triggered()
 {
    AboutWindow *aboutWindow = new AboutWindow(this);
    aboutWindow->show();
-
 }
 
 void MainWindow::on_actionFileQuit_triggered()
@@ -197,10 +181,6 @@ void MainWindow::on_documentList_itemSelectionChanged()
 {
    QListWidgetItem *item = ui->documentList->currentItem();
 
-
-   /*TODO need to think about are more elegant way then to always call
-    * the respective initSettings() function
-    */
    previewDocument(m_settings.value(HtmlToPdf::INI_PDF_DIR).toString() +
                    "/" + item->text());
 }
@@ -212,13 +192,12 @@ void MainWindow::on_clipboardChanged(const QString &url)
    HtmlToPdf *htmlToPdf = new HtmlToPdf(this);
    htmlToPdf->setUrl(url);
 
-   {  /* This was meant to be run as a thread. wkhtmltopdf does not support
-       * to be run inside a thread right now. If that changes we only
-       * need to call start() instead of run() below.
-       */
-      connect(htmlToPdf, &HtmlToPdf::pdfCreated, this, &MainWindow::on_pdfCreated);
-      htmlToPdf->run();   // run in main thread
-   }
+   connect(htmlToPdf, &HtmlToPdf::pdfCreated, this, &MainWindow::on_pdfCreated);
+   /* This was meant to be run as a thread. wkhtmltopdf does not support
+    * to be run inside a thread right now. If that changes, we only
+    * need to call start() instead of run() below.
+    */
+   htmlToPdf->run();   // run in main thread
 }
 
 void MainWindow::on_actionFileSettings_triggered()
