@@ -24,26 +24,17 @@
 #include <QClipboard>
 #include <QUrl>
 
-
 class ClipboardMonitor : public QObject
 {
    Q_OBJECT
 
 public:
    explicit ClipboardMonitor(QObject *parent = 0);
-   ~ClipboardMonitor();
 
    bool enable();
    void disable();
 
-   static void initSettings(const bool &force = false);
-
-   static const char *INI_TIME_SPAN;
-
-signals:
-
-protected slots:
-   void onClipboardChange();
+   static const IniFile::KeyValue INI_TIME_SPAN;
 
 private:
    QClipboard *m_clipboard;
@@ -55,7 +46,7 @@ private:
    IniFile m_settings;
 
 protected slots:
-
+   void onClipboardChange();
 
 signals:
    void clipboardChanged(QString bla);

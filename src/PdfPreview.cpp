@@ -23,14 +23,9 @@
 #define ELPP_NO_DEFAULT_LOG_FILE
 #include <easylogging++.h>
 
-const char *PdfPreview::INI_PAGE_NO = "PdfPreview/pageNo";
-const char *PdfPreview::INI_XRES = "PdfPreview/xRes";
-const char *PdfPreview::INI_YRES = "PdfPreview/yRes";
-
-PdfPreview::PdfPreview()
-{
-   initSettings();
-}
+const IniFile::KeyValue PdfPreview::INI_PAGE_NO = { "PdfPreview/pageNo", "0" };
+const IniFile::KeyValue PdfPreview::INI_XRES = { "PdfPreview/xRes", "300" };
+const IniFile::KeyValue PdfPreview::INI_YRES = { "PdfPreview/yRes", "300" };
 
 const QPixmap &PdfPreview::getPreview(const QString &file)
 {
@@ -49,18 +44,6 @@ const QPixmap &PdfPreview::getPreview(const QString &file)
    }
 
    return m_previews[file];
-}
-
-void PdfPreview::initSettings(const bool &force)
-{
-   IniFile settings;
-
-   if (not settings.contains(INI_PAGE_NO) or force)
-      settings.setValue(INI_PAGE_NO, 0);
-   if (not settings.contains(INI_XRES) or force)
-      settings.setValue(INI_XRES, 300);
-   if (not settings.contains(INI_YRES) or force)
-      settings.setValue(INI_YRES, 300);
 }
 
 void PdfPreview::readSettings()

@@ -40,8 +40,6 @@ PreferencesWindow::~PreferencesWindow()
 void PreferencesWindow::readSettings()
 {
    {  // settings from HtmlToPdf
-      HtmlToPdf::initSettings();   // make sure we have settings
-
       ui->targetDir->setText(m_settings.value(HtmlToPdf::INI_PDF_DIR).toString());
       ui->proxyEnable->setChecked(m_settings.value(HtmlToPdf::INI_PROXY_ENABLE).toBool());
       ui->proxyHost->setText(m_settings.value(HtmlToPdf::INI_PROXY_HOST).toString());

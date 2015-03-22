@@ -52,20 +52,15 @@ public:
    static void setProxyPassword(const QString &password);
    static const QString &getProxyPassword();
 
-   static void initSettings(const bool &force = false);
-
-
-   static const char *INI_PDF_DIR;
-   static const char *INI_PROXY_HOST;
-   static const char *INI_PROXY_PORT;
-   static const char *INI_PROXY_USER;
-   static const char *INI_PROXY_ENABLE;
-   static const char *INI_MARGIN_TOP;
-   static const char *INI_MARGIN_BOTTOM;
-   static const char *INI_MARGIN_LEFT;
-   static const char *INI_MARGIN_RIGHT;
-
-
+   static const IniFile::KeyValue INI_PDF_DIR;
+   static const IniFile::KeyValue INI_PROXY_HOST;
+   static const IniFile::KeyValue INI_PROXY_PORT;
+   static const IniFile::KeyValue INI_PROXY_USER;
+   static const IniFile::KeyValue INI_PROXY_ENABLE;
+   static const IniFile::KeyValue INI_MARGIN_TOP;
+   static const IniFile::KeyValue INI_MARGIN_BOTTOM;
+   static const IniFile::KeyValue INI_MARGIN_LEFT;
+   static const IniFile::KeyValue INI_MARGIN_RIGHT;
 
 private:
    QString m_outFile;

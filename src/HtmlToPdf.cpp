@@ -30,22 +30,40 @@
 #define ELPP_NO_DEFAULT_LOG_FILE
 #include <easylogging++.h>
 
-const char *HtmlToPdf::INI_PDF_DIR = "HtmlToPdf/pdfDirectory";
-const char *HtmlToPdf::INI_PROXY_HOST = "HtmlToPdf/proxyHost";
-const char *HtmlToPdf::INI_PROXY_PORT = "HtmlToPdf/proxyPort";
-const char *HtmlToPdf::INI_PROXY_USER = "HtmlToPdf/proxyUser";
-const char *HtmlToPdf::INI_PROXY_ENABLE = "HtmlToPdf/proxyEnable";
-const char *HtmlToPdf::INI_MARGIN_BOTTOM = "HtmlToPdf/marginBottom";
-const char *HtmlToPdf::INI_MARGIN_TOP = "HtmlToPdf/marginTop";
-const char *HtmlToPdf::INI_MARGIN_LEFT = "HtmlToPdf/marginLeft";
-const char *HtmlToPdf::INI_MARGIN_RIGHT = "HtmlToPdf/marginRight";
+const IniFile::KeyValue HtmlToPdf::INI_PROXY_HOST = {
+   "HtmlToPdf/proxyHost", "localhost"
+};
+const IniFile::KeyValue HtmlToPdf::INI_PROXY_PORT = {
+   "HtmlToPdf/proxyPort", "8080"
+};
+const IniFile::KeyValue HtmlToPdf::INI_PROXY_USER = {
+   "HtmlToPdf/proxyUser", "Lieselotte"
+};
+const IniFile::KeyValue HtmlToPdf::INI_PROXY_ENABLE = {
+   "HtmlToPdf/proxyEnable", "false"
+};
+const IniFile::KeyValue HtmlToPdf::INI_MARGIN_BOTTOM = {
+   "HtmlToPdf/marginBottom", "1"
+};
+const IniFile::KeyValue HtmlToPdf::INI_MARGIN_TOP = {
+   "HtmlToPdf/marginTop", "1"
+};
+const IniFile::KeyValue HtmlToPdf::INI_MARGIN_LEFT = {
+   "HtmlToPdf/marginLeft", "1"
+};
+const IniFile::KeyValue HtmlToPdf::INI_MARGIN_RIGHT = {
+   "HtmlToPdf/marginRight", "1"
+};
+const IniFile::KeyValue HtmlToPdf::INI_PDF_DIR = {
+   "HtmlToPdf/pdfDirectory", QDir::homePath() + "/" +
+   QStandardPaths::displayName(QStandardPaths::DocumentsLocation)
+};
 
 QString HtmlToPdf::m_proxyPassword;
 
 HtmlToPdf::HtmlToPdf(QObject *parent) :
    QThread(parent)
 {
-   initSettings();
 }
 
 void HtmlToPdf::setUrl(const QString &url)
@@ -71,31 +89,6 @@ void HtmlToPdf::setProxyPassword(const QString &password)
 const QString &HtmlToPdf::getProxyPassword()
 {
    return m_proxyPassword;
-}
-
-void HtmlToPdf::initSettings(const bool &force)
-{
-   IniFile settings;
-
-   if (not settings.contains(INI_PDF_DIR) or force)
-      settings.setValue(INI_PDF_DIR, QDir::homePath() + "/" +
-            QStandardPaths::displayName(QStandardPaths::DocumentsLocation));
-   if (not settings.contains(INI_PROXY_HOST) or force)
-      settings.setValue(INI_PROXY_HOST, "localhost");
-   if (not settings.contains(INI_PROXY_PORT) or force)
-      settings.setValue(INI_PROXY_PORT, "8080");
-   if (not settings.contains(INI_PROXY_USER) or force)
-      settings.setValue(INI_PROXY_USER, "Lieselotte");
-   if (not settings.contains(INI_PROXY_ENABLE) or force)
-      settings.setValue(INI_PROXY_ENABLE, false);
-   if (not settings.contains(INI_MARGIN_BOTTOM) or force)
-      settings.setValue(INI_MARGIN_BOTTOM, 1);
-   if (not settings.contains(INI_MARGIN_TOP) or force)
-      settings.setValue(INI_MARGIN_TOP, 1);
-   if (not settings.contains(INI_MARGIN_LEFT) or force)
-      settings.setValue(INI_MARGIN_LEFT, 1);
-   if (not settings.contains(INI_MARGIN_RIGHT) or force)
-      settings.setValue(INI_MARGIN_RIGHT, 1);
 }
 
 const QString &HtmlToPdf::getOutFile() const

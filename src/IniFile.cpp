@@ -77,3 +77,16 @@ QVariant IniFile::value(const QString &key, const QVariant &defaultValue) const
 {
    return m_settings->value(key, defaultValue);
 }
+
+QVariant IniFile::value(const IniFile::KeyValue &keyValue)
+{
+   if (not m_settings->contains(keyValue.key))
+      m_settings->setValue(keyValue.key, keyValue.value);
+
+   return m_settings->value(keyValue.key);
+}
+
+void IniFile::setValue(const IniFile::KeyValue &keyValue, const QVariant &value)
+{
+   m_settings->setValue(keyValue.key, value);
+}

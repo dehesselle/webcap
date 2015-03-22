@@ -28,20 +28,14 @@
 #define ELPP_NO_DEFAULT_LOG_FILE
 #include <easylogging++.h>
 
-const char *ClipboardMonitor::INI_TIME_SPAN = "ClipboardMonitor/timeSpan";
-
+const IniFile::KeyValue ClipboardMonitor::INI_TIME_SPAN =
+      { "ClipboardMonitor/timeSpan", "400" };
 
 ClipboardMonitor::ClipboardMonitor(QObject *parent) :
    QObject(parent),
    m_clipboard(QApplication::clipboard()),
    m_lastEvent(QDateTime::currentMSecsSinceEpoch())
 {
-   initSettings();
-}
-
-ClipboardMonitor::~ClipboardMonitor()
-{
-
 }
 
 bool ClipboardMonitor::enable()
@@ -50,21 +44,20 @@ bool ClipboardMonitor::enable()
    {
       m_connection = connect(m_clipboard, &QClipboard::changed, this, &ClipboardMonitor::onClipboardChange);
 
-   /*  TODO
+   /* TODO
     * http://doc.qt.io/qt-5/qobject.html#connect
     * The function returns a QMetaObject::Connection that represents
-    *  a handle to a connection if it successfully connects the signal
-    *  to the slot. The connection handle will be invalid if it cannot
-    *  create the connection, for example, if QObject is unable to verify
-    *  the existence of either signal or method, or if their signatures
-    *  aren't compatible. You can check if the handle is valid by casting
-    *  it to a bool.
+    * a handle to a connection if it successfully connects the signal
+    * to the slot. The connection handle will be invalid if it cannot
+    * create the connection, for example, if QObject is unable to verify
+    * the existence of either signal or method, or if their signatures
+    * aren't compatible. You can check if the handle is valid by casting
+    * it to a bool.
     *
     * How to correctly cast it to bool?
     */
    }
 }
-
 
 void ClipboardMonitor::disable()
 {
@@ -73,15 +66,6 @@ void ClipboardMonitor::disable()
       //TODO there was nothing to disconnect
    }
 }
-
-void ClipboardMonitor::initSettings(const bool &force)
-{
-   IniFile settings;
-
-   if (not settings.contains(INI_TIME_SPAN) or force)
-      settings.setValue(INI_TIME_SPAN, 400);
-}
-
 
 void ClipboardMonitor::onClipboardChange()
 {

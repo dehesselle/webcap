@@ -39,6 +39,12 @@ public:
    IniFile();
    ~IniFile();
 
+   struct KeyValue
+   {
+      const char *key;
+      const QString value;
+   };
+
    /** path of the INI file being used
     *
     * This function can be used to determine the general location to store other
@@ -52,11 +58,13 @@ public:
    /** forwards to QSettings::contains() */
    bool contains(const QString &key) const;
    /** forwards to QSettings::setValue() */
-   void setValue(const QString &key,
-                 const QVariant &value);
+   void setValue(const QString &key, const QVariant &value);
    /** forwards to QSettings::value() */
    QVariant value(const QString &key,
                   const QVariant &defaultValue = QVariant()) const;
+
+   QVariant value(const KeyValue &keyValue);
+   void setValue(const KeyValue &keyValue, const QVariant &value);
 
 private:
    QSettings *m_settings;

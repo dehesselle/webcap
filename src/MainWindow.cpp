@@ -119,7 +119,6 @@ MainWindow::MainWindow(QWidget *parent) :
    }
 
    {  // populate the document list with pre-existing PDF files
-      HtmlToPdf::initSettings();
       QDir dir(m_settings.value(HtmlToPdf::INI_PDF_DIR).toString());
       dir.setFilter(QDir::Files);
 
@@ -233,8 +232,6 @@ void MainWindow::on_actionFileSettings_triggered()
 
 void MainWindow::on_actionFileShowInExplorer_triggered()
 {
-   HtmlToPdf::initSettings();   // make sure we have these settings
-
    QDesktopServices::openUrl(QUrl("file:///" +
          m_settings.value(HtmlToPdf::INI_PDF_DIR).toString()));
 }

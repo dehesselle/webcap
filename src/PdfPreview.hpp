@@ -33,29 +33,25 @@
 class PdfPreview : protected PdfToPixmap
 {
 public:
-   PdfPreview();
-
    /** fetch preview from cache or generate it
     * @param[in] file a PDF file
     * @return a single page of the PDF
     */
    const QPixmap &getPreview(const QString &file);
 
-   static const char *INI_PAGE_NO;
-   static const char *INI_XRES;
-   static const char *INI_YRES;
-
-   static void initSettings(const bool &force = false);
+   static const IniFile::KeyValue INI_PAGE_NO;
+   static const IniFile::KeyValue INI_XRES;
+   static const IniFile::KeyValue INI_YRES;
 
 protected:
-   QMap<QString, QPixmap> m_previews;   ///< hold all generated previews
+   QMap<QString, QPixmap> m_previews;   ///< store all generated previews
 
 private:
-   /** read parameters from *.ini file
+   /** read parameters from INI file
     */
    void readSettings();
 
-   IniFile m_settings;   ///< access *.ini file
+   IniFile m_settings;   ///< access INI file
 };
 
 #endif // PDFPREVIEW_HPP
