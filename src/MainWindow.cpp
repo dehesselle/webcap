@@ -20,8 +20,8 @@
 #include "ui_MainWindow.h"
 #include "AboutWindow.hpp"
 #include "ClipboardMonitor.hpp"
-#include <QFileInfo>
 #include "PreferencesWindow.hpp"
+#include <QFileInfo>
 #include <QInputDialog>
 #include <QDesktopServices>
 #include <QUrl>
@@ -29,6 +29,7 @@
 #include <QFileInfoList>
 #include <QFileInfo>
 #include <QColor>
+#include <QMessageBox>
 
 #define ELPP_QT_LOGGING
 #define ELPP_THREAD_SAFE
@@ -38,7 +39,7 @@
 const char *MainWindow::INI_GEOMETRY = "MainWindow/geometry";
 const char *MainWindow::INI_SPLITTER = "MainWindow/splitter";
 const IniFile::KeyValue MainWindow::INI_AUTO_PREVIEW = {
-   "MainWindow/autoPreview", "true"
+   "MainWindow/autoPreview", "false"
 };
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -78,7 +79,20 @@ MainWindow::MainWindow(QWidget *parent) :
       connect(clipboardMonitor, &ClipboardMonitor::clipboardChanged,
               this, &MainWindow::on_clipboardChanged);
 
-      clipboardMonitor->enable();
+      QDir dir = m_settings.value(HtmlToPdf::INI_PDF_DIR).toString();
+
+      if (dir.exists())
+      {
+         clipboardMonitor->enable();
+      }
+      else
+      {
+         m_settings.setValue(HtmlToPdf::INI_PDF_DIR);
+         QMessageBox::critical(
+                  this, "invalid settings",
+                  QString("The configured target directory does not exist.\n") +
+                  "The configuration has been reset to a default value.");
+      }
    }
 
    // setup HTML-to-PDF converter
