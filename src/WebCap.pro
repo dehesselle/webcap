@@ -44,3 +44,5 @@ LIBS += -LD:/Dev/msys64/opt/wkhtmltopdf/bin -lwkhtmltox
 CONFIG += c++11
 
 INCLUDEPATH += D:/Dev/msys64/opt/wkhtmltopdf/include
+
+RC_ICONS = ../res/34423_tango_camera_photo.ico
