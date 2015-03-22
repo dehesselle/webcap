@@ -19,13 +19,15 @@
 #include "AboutWindow.hpp"
 #include "ui_AboutWindow.h"
 #include "Version.hpp"
+
 AboutWindow::AboutWindow(QWidget *parent) :
    QDialog(parent),
    ui(new Ui::AboutWindow)
 {
    ui->setupUi(this);
 
-   {  // set the version number
+   // set the version number
+   {
       QString html = ui->textBrowser->toHtml();
       html.replace("WEBCAP_VERSION", WEBCAP_VERSION);
       ui->textBrowser->setHtml(html);
@@ -39,5 +41,5 @@ AboutWindow::~AboutWindow()
 
 void AboutWindow::on_buttonAboutOk_clicked()
 {
-    close();
+   close();
 }
