@@ -52,24 +52,27 @@ public:
 
    /** path of the INI file being used
     *
-    * This function can be used to determine the general location to store other
-    * files (e.g. logs). It either returns a path to the user's profile or the
-    * application directory, depending on portable/non-portable usage.
+    * This function is used to determine where we can put our "internal"
+    * files like logs and such. It will return one of two possible paths:
+    * - a path inside the user's profile directory (i.e. normal mode) or
+    * - the application directory (i.e. portable mode).
+    * Using this function we're making sure to behave accordingly wether
+    * we're running in portable mode or not.
     *
     * @return path of the INI file
     */
    QString getPath() const;
 
-   /** forwards to respective QSettings method */
+   /** forwards to the respective QSettings method */
    bool contains(const QString &key) const;
-   /** forwards to respective QSettings method */
+   /** forwards to the respective QSettings method */
    void setValue(const QString &key, const QVariant &value);
-   /** forwards to respective QSettings method */
+   /** forwards to the respective QSettings method */
    void setValue(const KeyValue &keyValue, const QVariant &value);
-   /** forwards to respective QSettings method */
+   /** forwards to the respective QSettings method */
    QVariant value(const QString &key,
                   const QVariant &defaultValue = QVariant()) const;
-   /** forwards to respective QSettings method */
+   /** forwards to the respective QSettings method */
    QVariant value(const KeyValue &keyValue);
 
 private:
