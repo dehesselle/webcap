@@ -55,8 +55,8 @@ const IniFile::KeyValue HtmlToPdf::INI_MARGIN_RIGHT = {
    "HtmlToPdf/marginRight", "1"
 };
 const IniFile::KeyValue HtmlToPdf::INI_PDF_DIR = {
-   "HtmlToPdf/pdfDirectory", QDir::homePath() + "/" +
-   QStandardPaths::displayName(QStandardPaths::DocumentsLocation)
+   "HtmlToPdf/pdfDirectory",
+   QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)
 };
 
 QString HtmlToPdf::m_proxyPassword;
