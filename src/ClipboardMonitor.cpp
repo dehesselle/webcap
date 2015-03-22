@@ -42,7 +42,8 @@ bool ClipboardMonitor::enable()
 {
    if (m_clipboard)
    {
-      m_connection = connect(m_clipboard, &QClipboard::changed, this, &ClipboardMonitor::onClipboardChange);
+      m_connection = connect(m_clipboard, &QClipboard::changed,
+                             this, &ClipboardMonitor::onClipboardChange);
 
    /* TODO
     * http://doc.qt.io/qt-5/qobject.html#connect
