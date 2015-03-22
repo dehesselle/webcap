@@ -68,7 +68,7 @@ public:
    /** forwards to the respective QSettings method */
    void setValue(const QString &key, const QVariant &value);
    /** forwards to the respective QSettings method */
-   void setValue(const KeyValue &keyValue, const QVariant &value);
+   void setValue(const KeyValue &keyValue, const QVariant &value = QVariant());
    /** forwards to the respective QSettings method */
    QVariant value(const QString &key,
                   const QVariant &defaultValue = QVariant()) const;

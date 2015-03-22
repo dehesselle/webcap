@@ -88,5 +88,8 @@ QVariant IniFile::value(const IniFile::KeyValue &keyValue)
 
 void IniFile::setValue(const IniFile::KeyValue &keyValue, const QVariant &value)
 {
-   m_settings->setValue(keyValue.key, value);
+   if (value.isNull())
+      m_settings->setValue(keyValue.key, keyValue.value);
+   else
+      m_settings->setValue(keyValue.key, value);
 }
