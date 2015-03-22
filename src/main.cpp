@@ -31,14 +31,16 @@
 INITIALIZE_EASYLOGGINGPP
 
 // order represents log hierarchy
-static const char *INI_LOG_TRACE   = "main/logTrace";
-static const char *INI_LOG_DEBUG   = "main/logDebug";
-static const char *INI_LOG_VERBOSE = "main/logVerbose";
-static const char *INI_LOG_INFO    = "main/logInfo";
-static const char *INI_LOG_WARNING = "main/logWarning";
-static const char *INI_LOG_ERROR   = "main/logError";
-static const char *INI_LOG_FATAL   = "main/logFatal";
-static const char *INI_LOG_FORMAT  = "main/logFormat";
+static const IniFile::KeyValue INI_LOG_TRACE = { "main/logTrace", "false" };
+static const IniFile::KeyValue INI_LOG_DEBUG = { "main/logDebug", "false" };
+static const IniFile::KeyValue INI_LOG_VERBOSE = { "main/logVerbose", "false" };
+static const IniFile::KeyValue INI_LOG_INFO = { "main/logInfo", "true" };
+static const IniFile::KeyValue INI_LOG_WARNING = { "main/logWarning", "true" };
+static const IniFile::KeyValue INI_LOG_ERROR = { "main/logError", "true" };
+static const IniFile::KeyValue INI_LOG_FATAL = { "main/logFatal", "true" };
+static const IniFile::KeyValue INI_LOG_FORMAT = {
+   "main/logFormat", "%datetime %level [%func] %msg"
+};
 
 int main(int argc, char *argv[])
 {
@@ -48,30 +50,10 @@ int main(int argc, char *argv[])
    {
       IniFile settings;
 
-      // create defaults if they don't exist
-      {
-         if (not settings.contains(INI_LOG_TRACE))
-            settings.setValue(INI_LOG_TRACE, "false");
-         if (not settings.contains(INI_LOG_DEBUG))
-            settings.setValue(INI_LOG_DEBUG, "false");
-         if (not settings.contains(INI_LOG_VERBOSE))
-            settings.setValue(INI_LOG_VERBOSE, "false");
-         if (not settings.contains(INI_LOG_INFO))
-            settings.setValue(INI_LOG_INFO, "true");
-         if (not settings.contains(INI_LOG_WARNING))
-            settings.setValue(INI_LOG_WARNING, "true");
-         if (not settings.contains(INI_LOG_ERROR))
-            settings.setValue(INI_LOG_ERROR, "true");
-         if (not settings.contains(INI_LOG_FATAL))
-            settings.setValue(INI_LOG_FATAL, "true");
-         if (not settings.contains(INI_LOG_FORMAT))
-            settings.setValue(INI_LOG_FORMAT, "%datetime %level [%func] %msg");
-      }
-
       QString logfile =
             settings.getPath() + "/" +
             QFileInfo(QCoreApplication::applicationFilePath()).baseName() +
-            "/" + ".log";
+            ".log";
 
       el::Configurations config;
       config.setToDefault();
