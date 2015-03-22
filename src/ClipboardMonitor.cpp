@@ -58,6 +58,8 @@ bool ClipboardMonitor::enable()
     * How to correctly cast it to bool?
     */
    }
+
+   return true;
 }
 
 void ClipboardMonitor::disable()
@@ -81,7 +83,7 @@ void ClipboardMonitor::onClipboardChange()
          quint64 span = event - m_lastEvent;
 
          if (url == m_lastUrl)
-            if (span < m_settings.value(INI_TIME_SPAN).toInt())
+            if (span < m_settings.value(INI_TIME_SPAN).toUInt())
                emit clipboardChanged(m_clipboard->text());
             else
                LOG(DEBUG) << "span=" << span;
