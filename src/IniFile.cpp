@@ -57,7 +57,7 @@ IniFile::~IniFile()
    delete m_settings;
 }
 
-QString IniFile::getPath()
+QString IniFile::getPath() const
 {
    QFileInfo settingsFile(m_settings->fileName());
    return settingsFile.absolutePath();

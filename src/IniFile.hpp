@@ -39,6 +39,11 @@ public:
    IniFile();
    ~IniFile();
 
+   /**
+    * This is for the convenience of allowing us to have static key-value
+    * pairs of default INI settings within each class that works with an
+    * INI file.
+    */
    struct KeyValue
    {
       const char *key;
@@ -53,18 +58,19 @@ public:
     *
     * @return path of the INI file
     */
-   QString getPath();
+   QString getPath() const;
 
-   /** forwards to QSettings::contains() */
+   /** forwards to respective QSettings method */
    bool contains(const QString &key) const;
-   /** forwards to QSettings::setValue() */
+   /** forwards to respective QSettings method */
    void setValue(const QString &key, const QVariant &value);
-   /** forwards to QSettings::value() */
+   /** forwards to respective QSettings method */
+   void setValue(const KeyValue &keyValue, const QVariant &value);
+   /** forwards to respective QSettings method */
    QVariant value(const QString &key,
                   const QVariant &defaultValue = QVariant()) const;
-
+   /** forwards to respective QSettings method */
    QVariant value(const KeyValue &keyValue);
-   void setValue(const KeyValue &keyValue, const QVariant &value);
 
 private:
    QSettings *m_settings;
