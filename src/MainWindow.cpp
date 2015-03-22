@@ -28,6 +28,7 @@
 #include <QDir>
 #include <QFileInfoList>
 #include <QFileInfo>
+#include <QColor>
 
 #define ELPP_QT_LOGGING
 #define ELPP_THREAD_SAFE
@@ -118,7 +119,13 @@ MainWindow::MainWindow(QWidget *parent) :
          QFileInfo file = fileList.at(i);
 
          if (file.suffix().toLower() == "pdf")
-            new QListWidgetItem(file.fileName(), ui->documentList);
+         {
+            QListWidgetItem *item = new QListWidgetItem(file.fileName(), ui->documentList);
+            if (file.size())
+               item->setForeground(Qt::gray);
+            else
+               item->setForeground(QColor(Qt::red).lighter());
+         }
       }
    }
 }
@@ -139,15 +146,26 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pdfCreated(HtmlToPdf *htmlToPdf)
 {
-   previewDocument(htmlToPdf->getOutFile());
-
    QFileInfo file = htmlToPdf->getOutFile();
-   new QListWidgetItem(file.fileName(), ui->documentList);
+   QListWidgetItem *item = new QListWidgetItem(file.fileName(),
+                                               ui->documentList);
+
+   if (file.exists() and file.size())
+   {
+      ui->documentList->scrollToBottom();
+      ui->documentList->setCurrentItem(item);
+      ui->statusBar->showMessage("creating preview");
+      previewDocument(htmlToPdf->getOutFile());
+      ui->statusBar->showMessage(file.fileName() + ", " +
+                                 QString::number(file.size()) + " bytes");
+   }
+   else
+   {
+      item->setForeground(QColor(Qt::red).lighter());
+      ui->statusBar->showMessage("error: " + file.fileName() + ".", 5000);
+   }
 
    htmlToPdf->deleteLater();
-
-   ui->documentList->scrollToBottom();
-   ui->statusBar->showMessage("Created " + file.fileName() + ".", 5000);
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event)
@@ -179,15 +197,27 @@ void MainWindow::on_actionFileQuit_triggered()
 
 void MainWindow::on_documentList_itemSelectionChanged()
 {
-   QListWidgetItem *item = ui->documentList->currentItem();
+   ui->statusBar->clearMessage();
 
-   previewDocument(m_settings.value(HtmlToPdf::INI_PDF_DIR).toString() +
-                   "/" + item->text());
+   QListWidgetItem *item = ui->documentList->currentItem();
+   QFileInfo file = m_settings.value(HtmlToPdf::INI_PDF_DIR).toString() +
+         "/" + item->text();
+
+   if (item->foreground() == QColor(Qt::red).lighter())
+   {
+      ui->statusBar->showMessage("error: " + file.fileName() + ".", 5000);
+   }
+   else
+   {
+      ui->statusBar->showMessage(file.fileName() + ", " +
+                                 QString::number(file.size()) + " bytes");
+      previewDocument(file.absoluteFilePath());
+   }
 }
 
 void MainWindow::on_clipboardChanged(const QString &url)
 {
-   ui->statusBar->showMessage("Capturing " + url + "...");
+   ui->statusBar->showMessage("capture: " + url);
 
    HtmlToPdf *htmlToPdf = new HtmlToPdf(this);
    htmlToPdf->setUrl(url);
@@ -217,6 +247,8 @@ void MainWindow::on_actionFileShowInExplorer_triggered()
 
 void MainWindow::on_documentList_itemDoubleClicked(QListWidgetItem *item)
 {
+   ui->statusBar->clearMessage();
+
    QFileInfo pdf = m_settings.value(HtmlToPdf::INI_PDF_DIR).toString() +
          "/" + item->text();
 
