@@ -40,7 +40,7 @@ const QPixmap PdfToPixmap::createPixmap(const QString &file) const
    if (isFirstCall)
    {
       isFirstCall = false;
-      LOG(INFO) << "using Poppler v" << POPPLER_VERSION;
+      LOG(DEBUG) << "using Poppler v" << POPPLER_VERSION;
    }
 
    Poppler::Document *document = Poppler::Document::load(file);
