@@ -44,6 +44,8 @@ public:
    void run();
 
    void setUrl(const QString &url);
+   const QString &getUrl();
+
    const QString &getOutFile() const;
 
    static void initLib();

@@ -71,6 +71,11 @@ void HtmlToPdf::setUrl(const QString &url)
    m_url = url;
 }
 
+const QString &HtmlToPdf::getUrl()
+{
+   return m_url;
+}
+
 void HtmlToPdf::initLib()
 {
    wkhtmltopdf_init(false);
@@ -132,8 +137,10 @@ void HtmlToPdf::run()
 
    LOG(INFO) << m_url << ", " << m_outFile;
 
-   wkhtmltopdf_global_settings *globalSettings =  wkhtmltopdf_create_global_settings();
-   wkhtmltopdf_set_global_setting(globalSettings, "out", m_outFile.toStdString().c_str());
+   wkhtmltopdf_global_settings *globalSettings =
+         wkhtmltopdf_create_global_settings();
+   wkhtmltopdf_set_global_setting(globalSettings, "out",
+                                  m_outFile.toStdString().c_str());
    wkhtmltopdf_set_global_setting(globalSettings, "margin.top",
          m_settings.value(INI_MARGIN_TOP).toString().toStdString().c_str());
    wkhtmltopdf_set_global_setting(globalSettings, "margin.bottom",
@@ -143,8 +150,10 @@ void HtmlToPdf::run()
    wkhtmltopdf_set_global_setting(globalSettings, "margin.right",
          m_settings.value(INI_MARGIN_RIGHT).toString().toStdString().c_str());
 
-   wkhtmltopdf_object_settings *objectSettings = wkhtmltopdf_create_object_settings();
-   wkhtmltopdf_set_object_setting(objectSettings, "page", m_url.toStdString().c_str());
+   wkhtmltopdf_object_settings *objectSettings =
+         wkhtmltopdf_create_object_settings();
+   wkhtmltopdf_set_object_setting(objectSettings, "page",
+                                  m_url.toStdString().c_str());
 
    if (m_settings.value(INI_PROXY_ENABLE).toBool())
    {
@@ -163,7 +172,8 @@ void HtmlToPdf::run()
 
    }
 
-   wkhtmltopdf_converter *converter = wkhtmltopdf_create_converter(globalSettings);
+   wkhtmltopdf_converter *converter =
+         wkhtmltopdf_create_converter(globalSettings);
    wkhtmltopdf_add_object(converter, objectSettings, 0);
    wkhtmltopdf_convert(converter);
 
