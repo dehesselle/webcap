@@ -51,6 +51,7 @@ private slots:
    void on_actionFileSettings_triggered();
    void on_actionFileShowInExplorer_triggered();
    void on_actionFileQuit_triggered();
+   void on_actionHelpAboutQt_triggered();
    void on_actionHelpAboutWebCap_triggered();
 
    void on_clipboardChanged(const QString &url);

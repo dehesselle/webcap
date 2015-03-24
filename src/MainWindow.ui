@@ -88,6 +88,7 @@
      <string>Help</string>
     </property>
     <addaction name="actionHelpAboutWebCap"/>
+    <addaction name="actionHelpAboutQt"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHilfe"/>
@@ -127,6 +128,11 @@
   <action name="actionHelpAboutWebCap">
    <property name="text">
     <string>About WebCap</string>
+   </property>
+  </action>
+  <action name="actionHelpAboutQt">
+   <property name="text">
+    <string>About Qt</string>
    </property>
   </action>
  </widget>

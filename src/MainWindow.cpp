@@ -280,3 +280,8 @@ void MainWindow::on_documentList_itemDoubleClicked(QListWidgetItem *item)
    else
       LOG(ERROR) << "file not found: " << pdf.absoluteFilePath();
 }
+
+void MainWindow::on_actionHelpAboutQt_triggered()
+{
+   QMessageBox::aboutQt(this);
+}
