@@ -18,12 +18,12 @@
 
 #include "HtmlToPdf.hpp"
 #include "PreferencesWindow.hpp"
-#include <wkhtmltox/pdf.h>
 #include <QUrl>
 #include <QFileInfo>
 #include <QFile>
 #include <QStandardPaths>
 #include <QDir>
+#include <QMutexLocker>
 
 #define ELPP_QT_LOGGING
 #define ELPP_THREAD_SAFE
@@ -61,6 +61,9 @@ const IniFile::KeyValue HtmlToPdf::INI_PDF_DIR = {
 
 QString HtmlToPdf::m_proxyPassword;
 
+HtmlToPdf::CallbackMap HtmlToPdf::m_callbackMap;
+QMutex HtmlToPdf::m_callbackMapMutex;
+
 HtmlToPdf::HtmlToPdf(QObject *parent) :
    QThread(parent)
 {
@@ -88,12 +91,36 @@ void HtmlToPdf::deinitLib()
 
 void HtmlToPdf::setProxyPassword(const QString &password)
 {
-   m_proxyPassword = password;
+   HtmlToPdf::m_proxyPassword = password;
 }
 
 const QString &HtmlToPdf::getProxyPassword()
 {
-   return m_proxyPassword;
+   return HtmlToPdf::m_proxyPassword;
+}
+
+void HtmlToPdf::logWarningCallback(wkhtmltopdf_converter *converter,
+                                   const char *message)
+{
+   LOG(WARNING) << message;
+}
+
+void HtmlToPdf::logProgressCallback(wkhtmltopdf_converter *converter,
+                                    const int progress)
+{
+   HtmlToPdf *htmlToPdf = m_callbackMap.value(converter, 0);
+
+   if (htmlToPdf)
+   {
+      QFileInfo file = htmlToPdf->getOutFile();
+      LOG(TRACE) << file.fileName() << ": " << progress;
+
+      emit htmlToPdf->progressChanged(progress);
+   }
+   else
+   {
+      LOG(ERROR) << converter << ": " << progress;
+   }
 }
 
 const QString &HtmlToPdf::getOutFile() const
@@ -101,9 +128,22 @@ const QString &HtmlToPdf::getOutFile() const
    return m_outFile;
 }
 
+void HtmlToPdf::logErrorCallback(wkhtmltopdf_converter *converter,
+                                 const char *message)
+{
+   LOG(ERROR) << message;
+}
+
 void HtmlToPdf::run()
 {
    TIMED_FUNC(timerObj);
+
+   static bool isFirstCall = true;
+   if (isFirstCall)
+   {
+      isFirstCall = false;
+      LOG(DEBUG) << "using wkthmltopdf v" << wkhtmltopdf_version();
+   }
 
    {
       QString host = QUrl(m_url).host();
@@ -155,6 +195,7 @@ void HtmlToPdf::run()
    wkhtmltopdf_set_object_setting(objectSettings, "page",
                                   m_url.toStdString().c_str());
 
+   // Connect via proxy?
    if (m_settings.value(INI_PROXY_ENABLE).toBool())
    {
       QString host = m_settings.value(INI_PROXY_HOST).toString();
@@ -162,19 +203,30 @@ void HtmlToPdf::run()
       QString port = m_settings.value(INI_PROXY_PORT).toString();
 
       QString proxy = "http://" + user + ":" +
-            m_proxyPassword + "@" + host + ":" + port;
+            HtmlToPdf::m_proxyPassword + "@" + host + ":" + port;
 
       wkhtmltopdf_set_object_setting(objectSettings, "load.proxy",
                                      proxy.toStdString().c_str());
 
       LOG(DEBUG) << "using proxy http://"
                  << user << ":xxx@" << host << ":" << port;
-
    }
 
    wkhtmltopdf_converter *converter =
          wkhtmltopdf_create_converter(globalSettings);
+
+   {
+      QMutexLocker(&HtmlToPdf::m_callbackMapMutex);
+      HtmlToPdf::m_callbackMap[converter] = this;
+   }
+
    wkhtmltopdf_add_object(converter, objectSettings, 0);
+   wkhtmltopdf_set_error_callback(converter, logErrorCallback);
+   wkhtmltopdf_set_warning_callback(converter, logWarningCallback);
+   wkhtmltopdf_set_progress_changed_callback(converter, logProgressCallback);
+
+   //TODO callback for isFinished
+
    wkhtmltopdf_convert(converter);
 
    wkhtmltopdf_destroy_converter(converter);

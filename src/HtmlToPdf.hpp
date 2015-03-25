@@ -19,9 +19,12 @@
 #ifndef HTMLTOPDF_HPP
 #define HTMLTOPDF_HPP
 
-#include <QThread>
-#include <QString>
 #include "IniFile.hpp"
+#include <QThread>
+#include <QMutex>
+#include <QString>
+#include <QMap>
+#include <wkhtmltox/pdf.h>
 
 /**
  * This is a wrapper-class for using
@@ -70,10 +73,22 @@ private:
 
    static QString m_proxyPassword;
 
+   static void logErrorCallback(wkhtmltopdf_converter *converter,
+                         const char *message);
+   static void logWarningCallback(wkhtmltopdf_converter *converter,
+                         const char *message);
+   static void logProgressCallback(wkhtmltopdf_converter *converter,
+                                   const int progress);
+
    IniFile m_settings;
+
+   typedef QMap<wkhtmltopdf_converter*, HtmlToPdf*> CallbackMap;
+   static CallbackMap m_callbackMap;
+   static QMutex m_callbackMapMutex;
 
 signals:
    void pdfCreated(HtmlToPdf *myself);
+   void progressChanged(int percent);
 
 };
 
