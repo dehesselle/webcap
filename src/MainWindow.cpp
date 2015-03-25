@@ -125,6 +125,7 @@ MainWindow::MainWindow(QWidget *parent) :
    }
 
    // populate the document list with pre-existing PDF files
+   // TODO: date/time column? sort?
    {
       QDir dir(m_settings.value(HtmlToPdf::INI_PDF_DIR).toString());
       dir.setFilter(QDir::Files);
@@ -144,6 +145,19 @@ MainWindow::MainWindow(QWidget *parent) :
                item->setForeground(QColor(Qt::red).lighter());
          }
       }
+   }
+
+   // insert progressbar into statusbar
+   {
+      /* TODO
+       * This is only a temporary solution / proof of concept.
+       * We'll try to insert the progressbar into the list.
+       */
+      m_progressBar = new QProgressBar(this);
+      m_progressBar->setTextVisible(false);
+      m_progressBar->setFixedWidth(250);
+      m_progressBar->setHidden(true);
+      ui->statusBar->addPermanentWidget(m_progressBar, 0);
    }
 }
 
@@ -189,6 +203,22 @@ void MainWindow::on_pdfCreated(HtmlToPdf *htmlToPdf)
    }
 
    htmlToPdf->deleteLater();
+}
+
+void MainWindow::on_progressChanged(int progress)
+{
+   if (m_progressBar->isHidden())
+      m_progressBar->setHidden(false);
+
+   m_progressBar->setValue(progress);
+
+   if (progress == 100)
+   {
+      m_progressBar->reset();
+      m_progressBar->setHidden(true);
+   }
+
+   // TODO progressbar on per-item-basis
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event)
@@ -238,6 +268,8 @@ void MainWindow::on_documentList_itemSelectionChanged()
    }
 }
 
+//TODO rename this signal/slot to reflect what CLipboardMonitor is doing
+// this here is not a general "clipboard change" event
 void MainWindow::on_clipboardChanged(const QString &url)
 {
    ui->statusBar->showMessage("capture: " + url);
@@ -246,6 +278,9 @@ void MainWindow::on_clipboardChanged(const QString &url)
    htmlToPdf->setUrl(url);
 
    connect(htmlToPdf, &HtmlToPdf::pdfCreated, this, &MainWindow::on_pdfCreated);
+   connect(htmlToPdf, &HtmlToPdf::progressChanged,
+           this, MainWindow::on_progressChanged);
+
    /* This was meant to be run as a thread. wkhtmltopdf does not support
     * to be run inside a thread right now. If that changes, we only
     * need to call start() instead of run() below.

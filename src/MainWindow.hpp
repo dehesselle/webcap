@@ -27,6 +27,7 @@
 #include <QListWidgetItem>
 #include <QString>
 #include <QResizeEvent>
+#include <QProgressBar>
 
 namespace Ui {
 class MainWindow;
@@ -58,6 +59,7 @@ private slots:
    void on_documentList_itemDoubleClicked(QListWidgetItem *item);
    void on_documentList_itemSelectionChanged();
    void on_pdfCreated(HtmlToPdf *htmlToPdf);
+   void on_progressChanged(int progress);
 
 private:
    Ui::MainWindow *ui;
@@ -67,6 +69,8 @@ private:
    QGraphicsScene *m_scene;
    PdfPreview     *m_pdfPreview;
    IniFile         m_settings;
+
+   QProgressBar *m_progressBar;
 };
 
 #endif // MAINWINDOW_HPP
