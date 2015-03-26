@@ -189,9 +189,10 @@ void MainWindow::on_pdfCreated(HtmlToPdf *htmlToPdf)
          ui->documentList->setCurrentItem(item);
       }
 
-      ui->statusBar->showMessage("creating preview");
-      ui->statusBar->showMessage(file.fileName() + ", " +
-                                 QString::number(file.size()) + " bytes");
+      // TODO delete me?
+//      ui->statusBar->showMessage("creating preview");
+//      ui->statusBar->showMessage(file.fileName() + ", " +
+//                                 QString::number(file.size()) + " bytes");
    }
    else
    {
@@ -211,14 +212,6 @@ void MainWindow::on_progressChanged(int progress)
       m_progressBar->setHidden(false);
 
    m_progressBar->setValue(progress);
-
-   if (progress == 100)
-   {
-      m_progressBar->reset();
-      m_progressBar->setHidden(true);
-   }
-
-   // TODO progressbar on per-item-basis
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event)
@@ -268,6 +261,15 @@ void MainWindow::on_documentList_itemSelectionChanged()
    }
 }
 
+void MainWindow::on_isFinished(int finished)
+{
+   Q_UNUSED(finished);
+
+   m_progressBar->reset();
+   m_progressBar->setHidden(true);
+   ui->statusBar->clearMessage();
+}
+
 //TODO rename this signal/slot to reflect what CLipboardMonitor is doing
 // this here is not a general "clipboard change" event
 void MainWindow::on_clipboardChanged(const QString &url)
@@ -280,6 +282,7 @@ void MainWindow::on_clipboardChanged(const QString &url)
    connect(htmlToPdf, &HtmlToPdf::pdfCreated, this, &MainWindow::on_pdfCreated);
    connect(htmlToPdf, &HtmlToPdf::progressChanged,
            this, MainWindow::on_progressChanged);
+   connect(htmlToPdf, &HtmlToPdf::isFinished, this, &MainWindow::on_isFinished);
 
    /* This was meant to be run as a thread. wkhtmltopdf does not support
     * to be run inside a thread right now. If that changes, we only

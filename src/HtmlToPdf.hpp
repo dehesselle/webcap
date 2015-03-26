@@ -77,8 +77,10 @@ private:
                          const char *message);
    static void logWarningCallback(wkhtmltopdf_converter *converter,
                          const char *message);
-   static void logProgressCallback(wkhtmltopdf_converter *converter,
-                                   const int progress);
+   static void emitProgressChanged(wkhtmltopdf_converter *converter,
+                                  const int progress);
+   static void emitIsFinished(wkhtmltopdf_converter *converter,
+                              const int finished);
 
    IniFile m_settings;
 
@@ -89,6 +91,7 @@ private:
 signals:
    void pdfCreated(HtmlToPdf *myself);
    void progressChanged(int percent);
+   void isFinished(int finished);
 
 };
 

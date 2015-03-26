@@ -102,13 +102,14 @@ const QString &HtmlToPdf::getProxyPassword()
 void HtmlToPdf::logWarningCallback(wkhtmltopdf_converter *converter,
                                    const char *message)
 {
+   Q_UNUSED(converter);
    LOG(WARNING) << message;
 }
 
-void HtmlToPdf::logProgressCallback(wkhtmltopdf_converter *converter,
+void HtmlToPdf::emitProgressChanged(wkhtmltopdf_converter *converter,
                                     const int progress)
 {
-   HtmlToPdf *htmlToPdf = m_callbackMap.value(converter, 0);
+   HtmlToPdf *htmlToPdf = HtmlToPdf::m_callbackMap.value(converter, 0);
 
    if (htmlToPdf)
    {
@@ -123,6 +124,24 @@ void HtmlToPdf::logProgressCallback(wkhtmltopdf_converter *converter,
    }
 }
 
+void HtmlToPdf::emitIsFinished(wkhtmltopdf_converter *converter,
+                               const int finished)
+{
+   HtmlToPdf *htmlToPdf = HtmlToPdf::m_callbackMap.value(converter, 0);
+
+   if (htmlToPdf)
+   {
+      QFileInfo file = htmlToPdf->getOutFile();
+      LOG(TRACE) << file.fileName() << ": finished";
+
+      emit htmlToPdf->isFinished(finished);
+   }
+   else
+   {
+      LOG(ERROR) << converter << ": finished";
+   }
+}
+
 const QString &HtmlToPdf::getOutFile() const
 {
    return m_outFile;
@@ -131,6 +150,7 @@ const QString &HtmlToPdf::getOutFile() const
 void HtmlToPdf::logErrorCallback(wkhtmltopdf_converter *converter,
                                  const char *message)
 {
+   Q_UNUSED(converter);
    LOG(ERROR) << message;
 }
 
@@ -195,7 +215,7 @@ void HtmlToPdf::run()
    wkhtmltopdf_set_object_setting(objectSettings, "page",
                                   m_url.toStdString().c_str());
 
-   // Connect via proxy?
+   // check if we need to connect via proxy
    if (m_settings.value(INI_PROXY_ENABLE).toBool())
    {
       QString host = m_settings.value(INI_PROXY_HOST).toString();
@@ -215,6 +235,10 @@ void HtmlToPdf::run()
    wkhtmltopdf_converter *converter =
          wkhtmltopdf_create_converter(globalSettings);
 
+   /* Save the "converter to HtmlToPdf" relation. We use this later
+    * on when we need a way from a static callback function into
+    * the respective HtmlToPdf instance.
+    */
    {
       QMutexLocker(&HtmlToPdf::m_callbackMapMutex);
       HtmlToPdf::m_callbackMap[converter] = this;
@@ -223,9 +247,8 @@ void HtmlToPdf::run()
    wkhtmltopdf_add_object(converter, objectSettings, 0);
    wkhtmltopdf_set_error_callback(converter, logErrorCallback);
    wkhtmltopdf_set_warning_callback(converter, logWarningCallback);
-   wkhtmltopdf_set_progress_changed_callback(converter, logProgressCallback);
-
-   //TODO callback for isFinished
+   wkhtmltopdf_set_progress_changed_callback(converter, emitProgressChanged);
+   wkhtmltopdf_set_finished_callback(converter, emitIsFinished);
 
    wkhtmltopdf_convert(converter);
 

@@ -58,6 +58,7 @@ private slots:
    void on_clipboardChanged(const QString &url);
    void on_documentList_itemDoubleClicked(QListWidgetItem *item);
    void on_documentList_itemSelectionChanged();
+   void on_isFinished(int finished);
    void on_pdfCreated(HtmlToPdf *htmlToPdf);
    void on_progressChanged(int progress);
 
