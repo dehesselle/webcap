@@ -178,14 +178,15 @@ MainWindow::~MainWindow()
 void MainWindow::on_pdfCreated(HtmlToPdf *htmlToPdf)
 {
    QFileInfo file = htmlToPdf->getOutFile();
-   QListWidgetItem *item = new QListWidgetItem(file.fileName(),
-                                               ui->documentList);
+   QListWidgetItem *item = new QListWidgetItem(file.fileName());
 
    if (file.exists() and file.size())
    {
+      ui->documentList->insertItem(0, item);
+
       if (m_settings.value(INI_AUTO_PREVIEW).toBool())
       {
-         ui->documentList->scrollToBottom();
+         ui->documentList->scrollToTop();
          ui->documentList->setCurrentItem(item);
       }
 
