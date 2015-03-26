@@ -43,15 +43,13 @@ public:
    static const IniFile::KeyValue INI_XRES;
    static const IniFile::KeyValue INI_YRES;
 
-protected:
-   QMap<QString, QPixmap> m_previews;   ///< store all generated previews
-
 private:
    /** read parameters from INI file
     */
    void readSettings();
 
    IniFile m_settings;   ///< access INI file
+   QMap<QString, QPixmap> m_previews;   ///< store all generated previews
 };
 
 #endif // PDFPREVIEW_HPP
