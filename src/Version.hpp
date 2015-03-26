@@ -19,7 +19,7 @@
 #ifndef VERSION_HPP
 #define VERSION_HPP
 
-#define WEBCAP_VERSION "0.1"
+#define WEBCAP_VERSION "0.2"
 
 #endif // VERSION_HPP
 
