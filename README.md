@@ -8,16 +8,17 @@ Utilizing the power of [wkhtmltopdf](http://wkhtmltopdf.org), capturing a websit
 
 * The layout of the website is kept alive in vectorized form. It scales up and down without any loss of quality.
 * You retain access to the text (e.g. copy/paste); the PDF can be indexed by full-text search thingies.
-* Links stay alive and clickable inside the PDF. (*Restrictions do apply, see manual.*)
+* Links stay alive and clickable inside the PDF. _(Restrictions do apply, see manual.)_
 * The PDF file will most probably be less in size than a (high resolution) bitmap-based image. 
 
-Still, if you have a Mac, go use [Paparazzi!](https://derailer.org/paparazzi/) instead.
+Still, if you have a Mac, go use [Paparazzi!](https://derailer.org/paparazzi/) instead. (Yes, it is that good.)
 
-## Binaries
+## Download binaries
 
-todo
+I do supply release builds for the Windows x64 platform. You can find them ... __TODO__.
 
-## Further reading
+## Finally...
+More documentation can be found in the `MANUAL.md` file.
 
-I'd suggest you take a look at the MANUAL.txt file.
+Please keep in mind that this is still __work in progress__. Consider nothing as finished and __everything is subject to change__ until we reach v1.x.
 
