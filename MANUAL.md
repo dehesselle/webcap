@@ -1,29 +1,26 @@
 # TOC
-
 1. How to use this program
-2. Known Issues and Limitations
-3. other random stuff
+2. Known issues and limitations
+3. Other random stuff
 4. Roll credits!
 
 ## How to use this program
+### meant to be run in background
+WebCap is meant to be used "indirectly". That means that once you have configured it to your liking (e.g. where to put the PDF files), you minimize it to the taskbar and do not need to touch it in order to capture a website to PDF. In fact, there's no point in trying to do something with WebCap itself to capture a website, since that's just not how it's designed to work.
 
-todo
+### monitors clipboard for URLs
+WebCap monitors your clipboard. If you quickly copy the same URL to the clipboard twice in a row (i.e. press <kbd>Ctrl</kbd>+<kbd>c</kbd> twice), it will interpret this action as "please capture this website to PDF". That's it.
 
-## Issues and Limitations
+## Known issues and limitations
+* possible GUI freeze during capture
+* layout not guaranteed to be 100% like source
+* not all links will work
 
-* The GUI can/will freeze during a capture. That is an expected behaviour and have to live with that for the time being. (reason: wkhtmltopdf runs in main thread only)
-
-* links and wkhtmltopdf  todo
-
-* todo
-
-## other random stuff
-### What about multi-platform?
-WebCap has been created with the Windows platform in mind, but I guess using only Qt and freely available libraries is supposed to bestow the multi-platform capability upon it. That is, if I didn't do some platform dependent ~~shit~~ stuff in the code that I'm currently unaware of (keep your fingers crossed!). I'll be taking a closer look into this matter at some later point in the future.
+todo explain more
 
 ## Roll credits!
+I am not responsible for the magic that is happening here. Most of the heavy lifting is done by [wkhtmltopdf](http://wkhtmltopdf.org/) to render websites to PDF (using WebKit) and [Poppler](http://poppler.freedesktop.org/) to render a PDF into an image (for the preview).
 
-So, I am not responsible for the magic that is happening here. In fact, most of the heavy lifting is done by [wkhtmltopdf](http://wkhtmltopdf.org/) to render websites to PDF (using WebKit) and [Poppler](http://poppler.freedesktop.org/) to render a PDF into an image (for the preview).
+todo more credits
 
-todo
 
