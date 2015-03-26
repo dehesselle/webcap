@@ -31,7 +31,7 @@
 #include <easylogging++.h>
 
 const IniFile::KeyValue HtmlToPdf::INI_PROXY_HOST = {
-   "HtmlToPdf/proxyHost", "localhost"
+   "HtmlToPdf/proxyHost", "myproxy.mydomain.com"
 };
 const IniFile::KeyValue HtmlToPdf::INI_PROXY_PORT = {
    "HtmlToPdf/proxyPort", "8080"
