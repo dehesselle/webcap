@@ -19,8 +19,8 @@
 #ifndef PREFERENCESWINDOW_HPP
 #define PREFERENCESWINDOW_HPP
 
-#include <QDialog>
 #include "IniFile.hpp"
+#include <QDialog>
 #include <QString>
 
 namespace Ui {
