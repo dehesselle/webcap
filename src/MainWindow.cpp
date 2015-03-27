@@ -72,29 +72,6 @@ MainWindow::MainWindow(QWidget *parent) :
       ui->previewPicture->setScene(m_scene);
    }
 
-   // setup clipboard monitor
-   {
-      ClipboardMonitor *clipboardMonitor = new ClipboardMonitor(this);
-
-      connect(clipboardMonitor, &ClipboardMonitor::clipboardChanged,
-              this, &MainWindow::on_clipboardChanged);
-
-      QDir dir = m_settings.value(HtmlToPdf::INI_PDF_DIR).toString();
-
-      if (dir.exists())
-      {
-         clipboardMonitor->enable();
-      }
-      else
-      {
-         m_settings.setValue(HtmlToPdf::INI_PDF_DIR);
-         QMessageBox::critical(
-                  this, "invalid settings",
-                  QString("The configured target directory does not exist.\n") +
-                  "The configuration has been reset to a default value.");
-      }
-   }
-
    // setup HTML-to-PDF converter
    {
       HtmlToPdf::initLib();   // initialize 3rd-party library (wkhtmltopdf)
@@ -158,6 +135,26 @@ MainWindow::MainWindow(QWidget *parent) :
       m_progressBar->setFixedWidth(250);
       m_progressBar->setHidden(true);
       ui->statusBar->addPermanentWidget(m_progressBar, 0);
+   }
+
+   // setup clipboard monitor
+   {
+      ClipboardMonitor *clipboardMonitor = new ClipboardMonitor(this);
+
+      connect(clipboardMonitor, &ClipboardMonitor::clipboardChanged,
+              this, &MainWindow::on_clipboardChanged);
+
+      QDir dir = m_settings.value(HtmlToPdf::INI_PDF_DIR).toString();
+
+      if (not dir.exists())
+      {
+         m_settings.setValue(HtmlToPdf::INI_PDF_DIR);
+         QMessageBox::critical(
+                  this, "invalid settings",
+                  QString("The configured target directory does not exist.\n") +
+                  "The configuration has been reset to a default value.");
+      }
+      clipboardMonitor->enable();
    }
 }
 
