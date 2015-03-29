@@ -8,6 +8,7 @@ Utilizing the power of [wkhtmltopdf](http://wkhtmltopdf.org), capturing a websit
 * You retain access to the text (e.g. copy/paste); the PDF can be indexed by full-text search thingies.
 * Links stay alive and clickable inside the PDF.
 * The PDF file will most probably be less in size than a (high resolution) bitmap-based image. 
+
 _(Some restrictions/limitations may apply, see the manual.)_
 
 Still, if you have a Mac, go use [Paparazzi!](https://derailer.org/paparazzi/) instead. (Yes, it's that good.)
