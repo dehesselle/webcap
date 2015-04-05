@@ -137,8 +137,8 @@ MainWindow::MainWindow(QWidget *parent) :
    {
       ClipboardMonitor *clipboardMonitor = new ClipboardMonitor(this);
 
-      connect(clipboardMonitor, &ClipboardMonitor::clipboardChanged,
-              this, &MainWindow::on_clipboardChanged);
+      connect(clipboardMonitor, &ClipboardMonitor::urlCaptured,
+              this, &MainWindow::on_urlCaptured);
 
       QDir dir = m_settings.value(HtmlToPdf::INI_PDF_DIR).toString();
 
@@ -265,9 +265,7 @@ void MainWindow::on_isFinished(int finished)
    ui->statusBar->clearMessage();
 }
 
-//TODO rename this signal/slot to reflect what CLipboardMonitor is doing
-// this here is not a general "clipboard change" event
-void MainWindow::on_clipboardChanged(const QString &url)
+void MainWindow::on_urlCaptured(const QString &url)
 {
    ui->statusBar->showMessage("capture: " + url);
 

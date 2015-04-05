@@ -80,7 +80,7 @@ void ClipboardMonitor::onClipboardChange()
 
          if (url == m_lastUrl)
             if (span < m_settings.value(INI_TIME_SPAN).toUInt())
-               emit clipboardChanged(m_clipboard->text());
+               emit urlCaptured(m_clipboard->text());
             else
                LOG(DEBUG) << "span=" << span;
          else

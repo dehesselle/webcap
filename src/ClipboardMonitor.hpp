@@ -49,7 +49,7 @@ protected slots:
    void onClipboardChange();
 
 signals:
-   void clipboardChanged(QString url);
+   void urlCaptured(QString url);
 };
 
 #endif // CLIPBOARDMONITOR_HPP
