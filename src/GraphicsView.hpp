@@ -8,6 +8,8 @@
  * We want to be able to drag and drop the previewed document from the
  * QGraphicsView widget. The way to do that is to derive from QGraphicsView
  * and implement mousePressEvent ourselves.
+ *
+ * @see <a href="http://doc.qt.io/qt-5/dnd.html>Drag and Drop</a>
  */
 class GraphicsView : public QGraphicsView
 {
@@ -25,6 +27,10 @@ public:
    void setFilename(const QString &filename);
 
 private:
+   /** implementation for drag and drop
+    *
+    * @param event
+    */
    void mousePressEvent(QMouseEvent *event);
 
    QString m_filename;
