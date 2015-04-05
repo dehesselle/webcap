@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     HtmlToPdf.cpp \
     ClipboardMonitor.cpp \
     IniFile.cpp \
-    PreferencesWindow.cpp
+    PreferencesWindow.cpp \
+    GraphicsView.cpp
 
 HEADERS  += MainWindow.hpp \
     PdfToPixmap.hpp \
@@ -31,7 +32,8 @@ HEADERS  += MainWindow.hpp \
     ClipboardMonitor.hpp \
     IniFile.hpp \
     PreferencesWindow.hpp \
-    Version.hpp
+    Version.hpp \
+    GraphicsView.hpp
 
 FORMS    += MainWindow.ui \
     AboutWindow.ui \

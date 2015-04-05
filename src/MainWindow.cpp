@@ -226,6 +226,7 @@ void MainWindow::previewDocument(const QString& file)
    m_scene->addPixmap(m_pdfPreview->getPreview(file));
 
    ui->previewPicture->fitInView(m_scene->sceneRect(), Qt::KeepAspectRatio);
+   ui->previewPicture->setFilename(file);   // for drag 'n' drop
 }
 
 void MainWindow::on_actionHelpAboutWebCap_triggered()
