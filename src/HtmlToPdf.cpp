@@ -18,17 +18,13 @@
 
 #include "HtmlToPdf.hpp"
 #include "PreferencesWindow.hpp"
+#include "Log.hpp"
 #include <QUrl>
 #include <QFileInfo>
 #include <QFile>
 #include <QStandardPaths>
 #include <QDir>
 #include <QMutexLocker>
-
-#define ELPP_QT_LOGGING
-#define ELPP_THREAD_SAFE
-#define ELPP_NO_DEFAULT_LOG_FILE
-#include <easylogging++.h>
 
 const IniFile::KeyValue HtmlToPdf::INI_PROXY_HOST = {
    "HtmlToPdf/proxyHost", "myproxy.mydomain.com"

@@ -17,11 +17,7 @@
  */
 
 #include "PdfPreview.hpp"
-
-#define ELPP_QT_LOGGING
-#define ELPP_THREAD_SAFE
-#define ELPP_NO_DEFAULT_LOG_FILE
-#include <easylogging++.h>
+#include "Log.hpp"
 
 const IniFile::KeyValue PdfPreview::INI_PAGE_NO = { "PdfPreview/pageNo", "0" };
 const IniFile::KeyValue PdfPreview::INI_XRES = { "PdfPreview/xRes", "300" };

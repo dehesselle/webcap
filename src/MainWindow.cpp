@@ -21,6 +21,7 @@
 #include "AboutWindow.hpp"
 #include "ClipboardMonitor.hpp"
 #include "PreferencesWindow.hpp"
+#include "Log.hpp"
 #include <QFileInfo>
 #include <QInputDialog>
 #include <QDesktopServices>
@@ -30,11 +31,6 @@
 #include <QFileInfo>
 #include <QColor>
 #include <QMessageBox>
-
-#define ELPP_QT_LOGGING
-#define ELPP_THREAD_SAFE
-#define ELPP_NO_DEFAULT_LOG_FILE
-#include <easylogging++.h>
 
 const char *MainWindow::INI_GEOMETRY = "MainWindow/geometry";
 const char *MainWindow::INI_SPLITTER = "MainWindow/splitter";

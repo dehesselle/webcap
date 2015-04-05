@@ -19,14 +19,10 @@
 #include "MainWindow.hpp"
 #include "IniFile.hpp"
 #include "Version.hpp"
+#include "Log.hpp"
 #include <QApplication>
 #include <QCoreApplication>
 #include <QFileInfo>
-
-#define ELPP_QT_LOGGING
-#define ELPP_THREAD_SAFE
-#define ELPP_NO_DEFAULT_LOG_FILE
-#include <easylogging++.h>
 
 INITIALIZE_EASYLOGGINGPP
 

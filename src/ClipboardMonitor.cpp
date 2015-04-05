@@ -17,16 +17,12 @@
  */
 
 #include "ClipboardMonitor.hpp"
+#include "Log.hpp"
 #include <QMessageBox>
 #include <QApplication>
 #include <QMimeData>
 #include <QDateTime>
 #include <QUrl>
-
-#define ELPP_QT_LOGGING
-#define ELPP_THREAD_SAFE
-#define ELPP_NO_DEFAULT_LOG_FILE
-#include <easylogging++.h>
 
 const IniFile::KeyValue ClipboardMonitor::INI_TIME_SPAN =
       { "ClipboardMonitor/timeSpan", "400" };

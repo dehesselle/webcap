@@ -33,7 +33,8 @@ HEADERS  += MainWindow.hpp \
     IniFile.hpp \
     PreferencesWindow.hpp \
     Version.hpp \
-    GraphicsView.hpp
+    GraphicsView.hpp \
+    Log.hpp
 
 FORMS    += MainWindow.ui \
     AboutWindow.ui \

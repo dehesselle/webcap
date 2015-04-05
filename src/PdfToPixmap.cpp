@@ -17,13 +17,9 @@
  */
 
 #include "PdfToPixmap.hpp"
+#include "Log.hpp"
 #include <poppler/qt5/poppler-qt5.h>
 #include <poppler/poppler-config.h>
-
-#define ELPP_QT_LOGGING
-#define ELPP_THREAD_SAFE
-#define ELPP_NO_DEFAULT_LOG_FILE
-#include <easylogging++.h>
 
 PdfToPixmap::PdfToPixmap() :
    m_pageNo(0),
