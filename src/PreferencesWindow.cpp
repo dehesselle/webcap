@@ -19,6 +19,7 @@
 #include "PreferencesWindow.hpp"
 #include "ui_PreferencesWindow.h"
 #include "HtmlToPdf.hpp"
+#include "ClipboardMonitor.hpp"
 #include <QString>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -40,6 +41,7 @@ PreferencesWindow::~PreferencesWindow()
 void PreferencesWindow::readSettings()
 {
    ui->targetDir->setText(m_settings.value(HtmlToPdf::INI_PDF_DIR).toString());
+   ui->timeSpan->setValue(m_settings.value(ClipboardMonitor::INI_TIME_SPAN).toInt());
    ui->proxyEnable->setChecked(
             m_settings.value(HtmlToPdf::INI_PROXY_ENABLE).toBool());
    ui->proxyHost->setText(
@@ -100,6 +102,7 @@ void PreferencesWindow::on_buttonOk_clicked()
                           QString::number(ui->proxyEnable->isChecked()));
       HtmlToPdf::setProxyPassword(ui->proxyPassword->text());   // don't save!
 
+      m_settings.setValue(ClipboardMonitor::INI_TIME_SPAN, ui->timeSpan->value());
       close();
    }
 }
