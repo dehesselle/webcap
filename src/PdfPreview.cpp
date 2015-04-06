@@ -44,6 +44,7 @@ const QPixmap &PdfPreview::getPreview(const QString &file)
 
 void PdfPreview::readSettings()
 {
+   // settings for base class
    m_pageNo = m_settings.value(INI_PAGE_NO).toInt();
    m_xRes = m_settings.value(INI_XRES).toDouble();
    m_yRes = m_settings.value(INI_YRES).toDouble();

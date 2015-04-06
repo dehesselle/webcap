@@ -39,7 +39,7 @@ bool ClipboardMonitor::enable()
    if (m_clipboard)
    {
       m_connection = connect(m_clipboard, &QClipboard::changed,
-                             this, &ClipboardMonitor::onClipboardChange);
+                             this, &ClipboardMonitor::on_ClipboardChange);
 
    /* TODO
     * http://doc.qt.io/qt-5/qobject.html#connect
@@ -66,7 +66,7 @@ void ClipboardMonitor::disable()
    }
 }
 
-void ClipboardMonitor::onClipboardChange()
+void ClipboardMonitor::on_ClipboardChange()
 {
    qint64 event = QDateTime::currentMSecsSinceEpoch();
 
@@ -76,10 +76,14 @@ void ClipboardMonitor::onClipboardChange()
 
       if (url.isValid())
       {
+         // time between now and the last time we caught an URL
          quint64 span = event - m_lastEvent;
 
          if (url == m_lastUrl)
             if (span < m_settings.value(INI_TIME_SPAN).toUInt())
+               /* We found our custom event: the same URL has been quickly
+                * copied to the clipboard two times in a row.
+                */
                emit urlCaptured(m_clipboard->text());
             else
                LOG(DEBUG) << "span=" << span;

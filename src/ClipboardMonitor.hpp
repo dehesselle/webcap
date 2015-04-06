@@ -46,7 +46,7 @@ private:
    IniFile m_settings;
 
 protected slots:
-   void onClipboardChange();
+   void on_ClipboardChange();
 
 signals:
    void urlCaptured(QString url);

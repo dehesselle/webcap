@@ -182,11 +182,6 @@ void MainWindow::on_pdfCreated(HtmlToPdf *htmlToPdf)
          ui->documentList->scrollToTop();
          ui->documentList->setCurrentItem(item);
       }
-
-      // TODO delete me?
-//      ui->statusBar->showMessage("creating preview");
-//      ui->statusBar->showMessage(file.fileName() + ", " +
-//                                 QString::number(file.size()) + " bytes");
    }
    else
    {
