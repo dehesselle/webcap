@@ -61,6 +61,9 @@ private slots:
    void on_documentList_itemDoubleClicked(QListWidgetItem *item);
    void on_documentList_itemSelectionChanged();
 
+   /* reminder: don't use on_xxx_yyy syntax if you don't want to use
+    * auto-connect from QMetaObject
+    */
    void onClipboardMonitorUrlCaptured(const QString &url);
    void onHtmlToPdfPdfCreated(HtmlToPdf *htmlToPdf);
    void onHtmlToPdfProgressChanged(int percent);
