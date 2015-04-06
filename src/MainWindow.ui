@@ -117,7 +117,7 @@
   </action>
   <action name="actionFileSettings">
    <property name="text">
-    <string>Preferences</string>
+    <string>Preferences...</string>
    </property>
   </action>
   <action name="actionFileQuit">
@@ -127,12 +127,12 @@
   </action>
   <action name="actionHelpAboutWebCap">
    <property name="text">
-    <string>About WebCap</string>
+    <string>About WebCap...</string>
    </property>
   </action>
   <action name="actionHelpAboutQt">
    <property name="text">
-    <string>About Qt</string>
+    <string>About Qt...</string>
    </property>
   </action>
  </widget>
