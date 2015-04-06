@@ -161,7 +161,7 @@ MainWindow::MainWindow(QWidget *parent) :
       ClipboardMonitor *clipboardMonitor = new ClipboardMonitor(this);
 
       connect(clipboardMonitor, &ClipboardMonitor::urlCaptured,
-              this, &MainWindow::on_clipboardMonitor_urlCaptured);
+              this, &MainWindow::onClipboardMonitorUrlCaptured);
 
       QDir dir = m_settings.value(HtmlToPdf::INI_PDF_DIR).toString();
 
@@ -191,39 +191,54 @@ MainWindow::~MainWindow()
    delete ui;
 }
 
-void MainWindow::on_htmlToPdf_pdfCreated(HtmlToPdf *htmlToPdf)
+void MainWindow::onHtmlToPdfPdfCreated(HtmlToPdf *htmlToPdf)
 {
-   QFileInfo file = htmlToPdf->getOutFile();
-   QListWidgetItem *item = new QListWidgetItem(file.fileName());
-
-   if (file.exists() and file.size())
+   // GUI tasks, part 1: reset progress bars
    {
-      ui->documentList->insertItem(0, item);
+      m_progressBar->reset();
+      m_progressBar->setHidden(true);
+      ui->statusBar->clearMessage();
 
-      if (m_settings.value(INI_AUTO_PREVIEW).toBool())
-      {
-         ui->documentList->scrollToTop();
-         ui->documentList->setCurrentItem(item);
-      }
+#ifdef Q_OS_WIN32
+      m_progressTaskbar->reset();
+      m_progressTaskbar->setVisible(false);
+#endif
    }
-   else
+
+   // GUI tasks, part 2: insert PDF file in documentList
    {
-      item->setForeground(QColor(Qt::red).lighter());
-      ui->statusBar->showMessage("error: " + file.fileName() + ".", 5000);
-      LOG(ERROR) << htmlToPdf->getUrl() << ", "
-                 << file.absoluteFilePath()
-                 << " (" << file.size() << " bytes)";
+      QFileInfo file = htmlToPdf->getOutFile();
+      QListWidgetItem *item = new QListWidgetItem(file.fileName());
+
+      if (file.exists() and file.size())
+      {
+         ui->documentList->insertItem(0, item);
+
+         if (m_settings.value(INI_AUTO_PREVIEW).toBool())
+         {
+            ui->documentList->scrollToTop();
+            ui->documentList->setCurrentItem(item);
+         }
+      }
+      else
+      {
+         item->setForeground(QColor(Qt::red).lighter());
+         ui->statusBar->showMessage("error: " + file.fileName() + ".", 5000);
+         LOG(ERROR) << htmlToPdf->getUrl() << ", "
+                    << file.absoluteFilePath()
+                    << " (" << file.size() << " bytes)";
+      }
    }
 
    htmlToPdf->deleteLater();
 }
 
-void MainWindow::on_htmlToPdf_progressChanged(int progress)
+void MainWindow::onHtmlToPdfProgressChanged(int percent)
 {
    if (m_progressBar->isHidden())
       m_progressBar->setHidden(false);
 
-   m_progressBar->setValue(progress);
+   m_progressBar->setValue(percent);
 
 #ifdef Q_OS_WIN32
    // This is the one-time setup that we couldn't run in the constructor.
@@ -237,7 +252,7 @@ void MainWindow::on_htmlToPdf_progressChanged(int progress)
    if (not m_progressTaskbar->isVisible())
       m_progressTaskbar->setVisible(true);
 
-   m_progressTaskbar->setValue(progress);
+   m_progressTaskbar->setValue(percent);
 #endif
 }
 
@@ -289,21 +304,7 @@ void MainWindow::on_documentList_itemSelectionChanged()
    }
 }
 
-void MainWindow::on_htmlToPdf_isFinished(int finished)
-{
-   Q_UNUSED(finished);
-
-   m_progressBar->reset();
-   m_progressBar->setHidden(true);
-   ui->statusBar->clearMessage();
-
-#ifdef Q_OS_WIN32
-   m_progressTaskbar->reset();
-   m_progressTaskbar->setVisible(false);
-#endif
-}
-
-void MainWindow::on_clipboardMonitor_urlCaptured(const QString &url)
+void MainWindow::onClipboardMonitorUrlCaptured(const QString &url)
 {
    ui->statusBar->showMessage("capture: " + url);
 
@@ -311,11 +312,9 @@ void MainWindow::on_clipboardMonitor_urlCaptured(const QString &url)
    htmlToPdf->setUrl(url);
 
    connect(htmlToPdf, &HtmlToPdf::progressChanged,
-           this, MainWindow::on_htmlToPdf_progressChanged);
-   connect(htmlToPdf, &HtmlToPdf::isFinished,
-           this, &MainWindow::on_htmlToPdf_isFinished);
+           this, MainWindow::onHtmlToPdfProgressChanged);
    connect(htmlToPdf, &HtmlToPdf::pdfCreated,
-           this, &MainWindow::on_htmlToPdf_pdfCreated);
+           this, &MainWindow::onHtmlToPdfPdfCreated);
 
    /* This was meant to be run as a thread. wkhtmltopdf does not support
     * to be run inside a thread right now. If that changes, we only

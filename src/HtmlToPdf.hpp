@@ -91,8 +91,6 @@ private:
 signals:
    void pdfCreated(HtmlToPdf *myself);
    void progressChanged(int percent);
-   void isFinished(int finished);
-
 };
 
 #endif // HTMLTOPDF_HPP

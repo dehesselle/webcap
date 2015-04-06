@@ -123,6 +123,8 @@ void HtmlToPdf::emitProgressChanged(wkhtmltopdf_converter *converter,
 void HtmlToPdf::emitIsFinished(wkhtmltopdf_converter *converter,
                                const int finished)
 {
+   Q_UNUSED(finished);
+
    HtmlToPdf *htmlToPdf = HtmlToPdf::m_callbackMap.value(converter, 0);
 
    if (htmlToPdf)
@@ -130,7 +132,8 @@ void HtmlToPdf::emitIsFinished(wkhtmltopdf_converter *converter,
       QFileInfo file = htmlToPdf->getOutFile();
       LOG(TRACE) << file.fileName() << ": finished";
 
-      emit htmlToPdf->isFinished(finished);
+      // Being "finished" means we have created a PDF.
+      emit htmlToPdf->pdfCreated(htmlToPdf);
    }
    else
    {
@@ -162,18 +165,19 @@ void HtmlToPdf::run()
    }
 
    {
-      QString host = QUrl(m_url).host();
+      QString host = QUrl::fromUserInput(m_url).host();
       host.replace(".", "_");
 
-      {  // create a unique filename by adding a number to it
+      // create a unique filename by adding a number to it
+      {
          QFileInfo file;
 
          int i = 0;
-         do
+         do   // increase number until we have filename that doesn't exist
          {
             ++i;
             file = m_settings.value(INI_PDF_DIR).toString() +
-                   "/" + host + "_" + QString::number(i) + ".pdf";
+                  "/" + host + "_" + QString::number(i) + ".pdf";
          }
          while (file.exists());
 
@@ -218,6 +222,10 @@ void HtmlToPdf::run()
       QString user = m_settings.value(INI_PROXY_USER).toString();
       QString port = m_settings.value(INI_PROXY_PORT).toString();
 
+      /* syntax is
+       * http://username:password@myhost.de:8080
+       */
+
       QString proxy = "http://" + user + ":" +
             HtmlToPdf::m_proxyPassword + "@" + host + ":" + port;
 
@@ -251,6 +259,4 @@ void HtmlToPdf::run()
    wkhtmltopdf_destroy_converter(converter);
    wkhtmltopdf_destroy_object_settings(objectSettings);
    wkhtmltopdf_destroy_global_settings(globalSettings);
-
-   emit pdfCreated(this);
 }
