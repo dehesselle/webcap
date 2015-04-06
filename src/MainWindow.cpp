@@ -333,7 +333,7 @@ void MainWindow::on_actionFileSettings_triggered()
 
 void MainWindow::on_actionFileShowInExplorer_triggered()
 {
-   QDesktopServices::openUrl(QUrl("file:///" +
+   QDesktopServices::openUrl(QUrl::fromUserInput(
          m_settings.value(HtmlToPdf::INI_PDF_DIR).toString()));
 }
 
@@ -345,7 +345,7 @@ void MainWindow::on_documentList_itemDoubleClicked(QListWidgetItem *item)
          "/" + item->text();
 
    if (pdf.exists())
-      QDesktopServices::openUrl(QUrl("file:///" + pdf.absoluteFilePath()));
+      QDesktopServices::openUrl(QUrl::fromUserInput(pdf.absoluteFilePath()));
    else
       LOG(ERROR) << "file not found: " << pdf.absoluteFilePath();
 }
