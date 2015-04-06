@@ -59,12 +59,12 @@ private slots:
    void on_actionHelpAboutQt_triggered();
    void on_actionHelpAboutWebCap_triggered();
 
+   void on_clipboardMonitor_urlCaptured(const QString &url);
    void on_documentList_itemDoubleClicked(QListWidgetItem *item);
    void on_documentList_itemSelectionChanged();
-   void on_isFinished(int finished);
-   void on_pdfCreated(HtmlToPdf *htmlToPdf);
-   void on_progressChanged(int progress);
-   void on_urlCaptured(const QString &url);
+   void on_htmlToPdf_isFinished(int finished);
+   void on_htmlToPdf_pdfCreated(HtmlToPdf *htmlToPdf);
+   void on_htmlToPdf_progressChanged(int progress);
 
 private:
    Ui::MainWindow *ui;

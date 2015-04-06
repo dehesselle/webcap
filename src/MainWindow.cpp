@@ -161,7 +161,7 @@ MainWindow::MainWindow(QWidget *parent) :
       ClipboardMonitor *clipboardMonitor = new ClipboardMonitor(this);
 
       connect(clipboardMonitor, &ClipboardMonitor::urlCaptured,
-              this, &MainWindow::on_urlCaptured);
+              this, &MainWindow::on_clipboardMonitor_urlCaptured);
 
       QDir dir = m_settings.value(HtmlToPdf::INI_PDF_DIR).toString();
 
@@ -191,7 +191,7 @@ MainWindow::~MainWindow()
    delete ui;
 }
 
-void MainWindow::on_pdfCreated(HtmlToPdf *htmlToPdf)
+void MainWindow::on_htmlToPdf_pdfCreated(HtmlToPdf *htmlToPdf)
 {
    QFileInfo file = htmlToPdf->getOutFile();
    QListWidgetItem *item = new QListWidgetItem(file.fileName());
@@ -218,7 +218,7 @@ void MainWindow::on_pdfCreated(HtmlToPdf *htmlToPdf)
    htmlToPdf->deleteLater();
 }
 
-void MainWindow::on_progressChanged(int progress)
+void MainWindow::on_htmlToPdf_progressChanged(int progress)
 {
    if (m_progressBar->isHidden())
       m_progressBar->setHidden(false);
@@ -289,7 +289,7 @@ void MainWindow::on_documentList_itemSelectionChanged()
    }
 }
 
-void MainWindow::on_isFinished(int finished)
+void MainWindow::on_htmlToPdf_isFinished(int finished)
 {
    Q_UNUSED(finished);
 
@@ -303,17 +303,19 @@ void MainWindow::on_isFinished(int finished)
 #endif
 }
 
-void MainWindow::on_urlCaptured(const QString &url)
+void MainWindow::on_clipboardMonitor_urlCaptured(const QString &url)
 {
    ui->statusBar->showMessage("capture: " + url);
 
    HtmlToPdf *htmlToPdf = new HtmlToPdf(this);
    htmlToPdf->setUrl(url);
 
-   connect(htmlToPdf, &HtmlToPdf::pdfCreated, this, &MainWindow::on_pdfCreated);
    connect(htmlToPdf, &HtmlToPdf::progressChanged,
-           this, MainWindow::on_progressChanged);
-   connect(htmlToPdf, &HtmlToPdf::isFinished, this, &MainWindow::on_isFinished);
+           this, MainWindow::on_htmlToPdf_progressChanged);
+   connect(htmlToPdf, &HtmlToPdf::isFinished,
+           this, &MainWindow::on_htmlToPdf_isFinished);
+   connect(htmlToPdf, &HtmlToPdf::pdfCreated,
+           this, &MainWindow::on_htmlToPdf_pdfCreated);
 
    /* This was meant to be run as a thread. wkhtmltopdf does not support
     * to be run inside a thread right now. If that changes, we only
