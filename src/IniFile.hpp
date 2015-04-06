@@ -46,7 +46,7 @@ public:
     */
    struct KeyValue
    {
-      const char *key;
+      const char *key;   ///< syntax is \c section.key
       const QString value;
    };
 
@@ -56,6 +56,7 @@ public:
     * files like logs and such. It will return one of two possible paths:
     * - a path inside the user's profile directory (i.e. normal mode) or
     * - the application directory (i.e. portable mode).
+    *
     * Using this function we're making sure to behave accordingly wether
     * we're running in portable mode or not.
     *
@@ -63,16 +64,36 @@ public:
     */
    QString getPath() const;
 
-   /** forwards to the respective QSettings method */
+   /** forwards to the respective QSettings method
+    *
+    * @see <a href="http://doc.qt.io/qt-5/qsettings.html#contains">
+    * QSettings::contains</a>
+    */
    bool contains(const QString &key) const;
-   /** forwards to the respective QSettings method */
+   /** forwards to the respective QSettings method
+    * 
+    * @see <a href="http://doc.qt.io/qt-5/qsettings.html#setValue">
+    * QSettings::setValue</a>
+    */
    void setValue(const QString &key, const QVariant &value);
-   /** forwards to the respective QSettings method */
+   /** forwards to the respective QSettings method
+    * 
+    * @see <a href="http://doc.qt.io/qt-5/qsettings.html#setValue">
+    * QSettings::setValue</a>
+    */
    void setValue(const KeyValue &keyValue, const QVariant &value = QVariant());
-   /** forwards to the respective QSettings method */
+   /** forwards to the respective QSettings method
+    * 
+    * @see <a href="http://doc.qt.io/qt-5/qsettings.html#value">
+    * QSettings::value</a>
+    */
    QVariant value(const QString &key,
                   const QVariant &defaultValue = QVariant()) const;
-   /** forwards to the respective QSettings method */
+   /** forwards to the respective QSettings method
+    * 
+    * @see <a href="http://doc.qt.io/qt-5/qsettings.html#value">
+    * QSettings::value</a>
+    */
    QVariant value(const KeyValue &keyValue);
 
 private:

@@ -27,7 +27,9 @@ IniFile::IniFile()
                               "dehesselle",
                               "WebCap");
 
-   /* This is the easiest way to switch between portable (i.e. INI in
+   /* portable vs. non-portable mode
+    *
+    * This is the easiest way to switch between portable (i.e. INI in
     * application directory) and non-portable (i.e. INI in user's profile
     * directory) mode:
     * - create an instance of QSettings with QSettings::UserScope

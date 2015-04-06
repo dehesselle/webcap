@@ -26,34 +26,15 @@
 #include <QDir>
 #include <QMutexLocker>
 
-const IniFile::KeyValue HtmlToPdf::INI_PROXY_HOST = {
-   "HtmlToPdf/proxyHost", "myproxy.mydomain.com"
-};
-const IniFile::KeyValue HtmlToPdf::INI_PROXY_PORT = {
-   "HtmlToPdf/proxyPort", "8080"
-};
-const IniFile::KeyValue HtmlToPdf::INI_PROXY_USER = {
-   "HtmlToPdf/proxyUser", "Lieselotte"
-};
-const IniFile::KeyValue HtmlToPdf::INI_PROXY_ENABLE = {
-   "HtmlToPdf/proxyEnable", "false"
-};
-const IniFile::KeyValue HtmlToPdf::INI_MARGIN_BOTTOM = {
-   "HtmlToPdf/marginBottom", "1"
-};
-const IniFile::KeyValue HtmlToPdf::INI_MARGIN_TOP = {
-   "HtmlToPdf/marginTop", "1"
-};
-const IniFile::KeyValue HtmlToPdf::INI_MARGIN_LEFT = {
-   "HtmlToPdf/marginLeft", "1"
-};
-const IniFile::KeyValue HtmlToPdf::INI_MARGIN_RIGHT = {
-   "HtmlToPdf/marginRight", "1"
-};
-const IniFile::KeyValue HtmlToPdf::INI_PDF_DIR = {
-   "HtmlToPdf/pdfDirectory",
-   QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)
-};
+const IniFile::KeyValue HtmlToPdf::INI_PROXY_HOST =    { "HtmlToPdf/proxyHost", "myproxy.mydomain.com" };
+const IniFile::KeyValue HtmlToPdf::INI_PROXY_PORT =    { "HtmlToPdf/proxyPort", "8080" };
+const IniFile::KeyValue HtmlToPdf::INI_PROXY_USER =    { "HtmlToPdf/proxyUser", "Lieselotte" };
+const IniFile::KeyValue HtmlToPdf::INI_PROXY_ENABLE =  { "HtmlToPdf/proxyEnable", "false" };
+const IniFile::KeyValue HtmlToPdf::INI_MARGIN_BOTTOM = { "HtmlToPdf/marginBottom", "1" };
+const IniFile::KeyValue HtmlToPdf::INI_MARGIN_TOP =    { "HtmlToPdf/marginTop", "1" };
+const IniFile::KeyValue HtmlToPdf::INI_MARGIN_LEFT =   { "HtmlToPdf/marginLeft", "1" };
+const IniFile::KeyValue HtmlToPdf::INI_MARGIN_RIGHT =  { "HtmlToPdf/marginRight", "1" };
+const IniFile::KeyValue HtmlToPdf::INI_PDF_DIR =       { "HtmlToPdf/pdfDirectory", QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) };
 
 QString HtmlToPdf::m_proxyPassword;
 

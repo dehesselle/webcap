@@ -7,22 +7,22 @@
 /**
  * We want to be able to drag and drop the previewed document from the
  * QGraphicsView widget. The way to do that is to derive from QGraphicsView
- * and implement mousePressEvent ourselves.
+ * and implement mousePressEvent() ourselves.
  *
- * @see <a href="http://doc.qt.io/qt-5/dnd.html>Drag and Drop</a>
+ * @see <a href="http://doc.qt.io/qt-5/dnd.html">Drag and Drop in Qt 5</a>
  */
 class GraphicsView : public QGraphicsView
 {
 public:
    GraphicsView(QWidget *parent = 0);
 
-   /** filename for drag and drop operation
+   /** set filename for drag and drop operation
     *
     * The QGraphicsView widget does not know for which file's preview we're
     * using it. We cannot facilitate the desired drag and drop operation
     * without supplying the filename one way or the other.
     *
-    * @param[in] filename the filename that can be dragged and dropped
+    * @param[in] filename the file that will be dragged and dropped
     */
    void setFilename(const QString &filename);
 
@@ -33,7 +33,7 @@ private:
     */
    void mousePressEvent(QMouseEvent *event);
 
-   QString m_filename;
+   QString m_filename;   ///< filename for drag and drop
 };
 
 #endif // GRAPHICSVIEW_HPP
