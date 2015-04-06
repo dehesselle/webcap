@@ -276,6 +276,8 @@ void MainWindow::previewDocument(const QString& file)
 void MainWindow::on_actionHelpAboutWebCap_triggered()
 {
    AboutWindow *aboutWindow = new AboutWindow(this);
+   aboutWindow->setWindowFlags(aboutWindow->windowFlags() &
+                               ~Qt::WindowContextHelpButtonHint);
    aboutWindow->show();
 }
 
