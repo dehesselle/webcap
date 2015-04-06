@@ -32,6 +32,10 @@
 #include <QColor>
 #include <QMessageBox>
 
+#ifdef Q_OS_WIN32
+#include <QtWinExtras/QWinTaskbarButton>
+#endif
+
 const char *MainWindow::INI_GEOMETRY = "MainWindow/geometry";
 const char *MainWindow::INI_SPLITTER = "MainWindow/splitter";
 const IniFile::KeyValue MainWindow::INI_AUTO_PREVIEW = {
@@ -53,8 +57,10 @@ MainWindow::MainWindow(QWidget *parent) :
       ui->actionFileQuit->setShortcut(QKeySequence(Qt::ALT + Qt::Key_F4));
 
       // restore windows position and splitter layout
-      restoreGeometry(m_settings.value(INI_GEOMETRY, saveGeometry()).toByteArray());
-      ui->splitter->restoreState(m_settings.value(INI_SPLITTER, ui->splitter->saveState()).toByteArray());
+      restoreGeometry(m_settings.value(INI_GEOMETRY,
+                                       saveGeometry()).toByteArray());
+      ui->splitter->restoreState(m_settings.value(INI_SPLITTER,
+            ui->splitter->saveState()).toByteArray());
 
       // hide toolbar and prevent unhiding it
       ui->mainToolBar->hide();
@@ -98,7 +104,6 @@ MainWindow::MainWindow(QWidget *parent) :
    }
 
    // populate the document list with pre-existing PDF files
-   // TODO: date/time column? sort?
    {
       QDir dir(m_settings.value(HtmlToPdf::INI_PDF_DIR).toString());
       dir.setFilter(QDir::Files);
@@ -111,7 +116,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
          if (file.suffix().toLower() == "pdf")
          {
-            QListWidgetItem *item = new QListWidgetItem(file.fileName(), ui->documentList);
+            QListWidgetItem *item = new QListWidgetItem(file.fileName(),
+                                                        ui->documentList);
             if (file.size())
                item->setForeground(Qt::gray);
             else
@@ -122,16 +128,33 @@ MainWindow::MainWindow(QWidget *parent) :
 
    // insert progressbar into statusbar
    {
-      /* TODO
-       * This is only a temporary solution / proof of concept.
-       * We'll try to insert the progressbar into the list.
-       */
       m_progressBar = new QProgressBar(this);
       m_progressBar->setTextVisible(false);
       m_progressBar->setFixedWidth(250);
       m_progressBar->setHidden(true);
       ui->statusBar->addPermanentWidget(m_progressBar, 0);
    }
+
+#ifdef Q_OS_WIN32
+   /* insert progressbar into taskbar
+    *
+    * The following code for inserting a progressbar into the taskbar
+    * was supposed to go here. But it turns out that no progress is shown
+    * in the taskbar (nor any errors or messages) if this is set up so early.
+    * Best guess right now is that we do not have a valid window handle
+    * at this point.
+    * To resolve this, we only initialize m_progressTaskbar here and move
+    * this code to on_progressChanged().
+    *
+   {
+      QWinTaskbarButton *button = new QWinTaskbarButton(this);
+      button->setWindow(this->windowHandle());
+      m_progressTaskbar = button->progress();
+      m_progressTaskbar->setVisible(false);
+   }
+    */
+   m_progressTaskbar = 0;
+#endif
 
    // setup clipboard monitor
    {
@@ -201,6 +224,21 @@ void MainWindow::on_progressChanged(int progress)
       m_progressBar->setHidden(false);
 
    m_progressBar->setValue(progress);
+
+#ifdef Q_OS_WIN32
+   // This is the one-time setup that we couldn't run in the constructor.
+   if (not m_progressTaskbar)
+   {
+      QWinTaskbarButton *button = new QWinTaskbarButton(this);
+      button->setWindow(this->windowHandle());
+      m_progressTaskbar = button->progress();
+   }
+
+   if (not m_progressTaskbar->isVisible())
+      m_progressTaskbar->setVisible(true);
+
+   m_progressTaskbar->setValue(progress);
+#endif
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event)
@@ -258,6 +296,11 @@ void MainWindow::on_isFinished(int finished)
    m_progressBar->reset();
    m_progressBar->setHidden(true);
    ui->statusBar->clearMessage();
+
+#ifdef Q_OS_WIN32
+   m_progressTaskbar->reset();
+   m_progressTaskbar->setVisible(false);
+#endif
 }
 
 void MainWindow::on_urlCaptured(const QString &url)

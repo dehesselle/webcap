@@ -29,6 +29,10 @@
 #include <QResizeEvent>
 #include <QProgressBar>
 
+#ifdef Q_OS_WIN32
+#include <QtWinExtras/QWinTaskbarProgress>
+#endif
+
 namespace Ui {
 class MainWindow;
 }
@@ -72,6 +76,9 @@ private:
    IniFile         m_settings;
 
    QProgressBar *m_progressBar;
+#ifdef Q_OS_WIN32
+   QWinTaskbarProgress *m_progressTaskbar;
+#endif
 };
 
 #endif // MAINWINDOW_HPP
