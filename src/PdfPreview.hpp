@@ -25,30 +25,30 @@
 #include <QPixmap>
 #include <QString>
 
-/**
+/** @brief create pixmaps from PDF files
+ *
  * This class extends PdfToPixmap with the following abilities:
- * - reading parameters from *.ini file
+ * - reading parameters from an INI file
  * - caching all generated Pixmaps
  */
 class PdfPreview : protected PdfToPixmap
 {
 public:
-   /** fetch preview from cache or generate it
+   /** @brief fetch preview from cache or generate it
     * @param[in] file a PDF file
     * @return a single page of the PDF
     */
    const QPixmap &getPreview(const QString &file);
 
-   static const IniFile::KeyValue INI_PAGE_NO;
-   static const IniFile::KeyValue INI_XRES;
-   static const IniFile::KeyValue INI_YRES;
+   static const IniFile::KeyValue INI_PAGE_NO;   ///< page no. to preview
+   static const IniFile::KeyValue INI_XRES;      ///< x-resolution for pixmap
+   static const IniFile::KeyValue INI_YRES;      ///< y-resolution for pixmap
 
 private:
-   /** read parameters from INI file
-    */
+   /// @brief read parameters from INI file
    void readSettings();
 
-   IniFile m_settings;   ///< access INI file
+   IniFile m_settings;   ///< our configurable settings
    QMap<QString, QPixmap> m_previews;   ///< store all generated previews
 };
 

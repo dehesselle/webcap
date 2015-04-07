@@ -26,14 +26,15 @@
 #include <QMap>
 #include <wkhtmltox/pdf.h>
 
-/**
+/** @brief convert HTML to PDF
+ *
  * This is a wrapper-class for using
  * <a href="http://wkhtmltopdf.org/">wkhtmltopdf</a> to convert a webpage
  * to a PDF document. It has been designed to run the conversion in a thread,
  * avoiding to freeze the GUI / offloading the heavy stuff from the main thread.
  * But wkhtmltopdf currently does not support running inside a thread.
  * Nevertheless, we're keeping this design. We just have to directly
- * call HtmlToPdf::run() instead of HtmlToPdf::start() for the time being.
+ * call run() instead of start() for the time being.
  *
  * @see <a href="http://wkhtmltopdf.org/libwkhtmltox/">
  * libwkhtmltox Documentation</a>
@@ -46,39 +47,39 @@ public:
 
    void run();   ///< run wkhtmltopdf 
 
-   /// set the URL to be captured with wkhtmltopdf
+   /// @brief set the URL to be captured with wkhtmltopdf
    void setUrl(const QString &url);
-   /// get the URL that has previously been set
+   /// @brief get the URL that has previously been set
    const QString &getUrl();
 
-   /// get the filename of the generated PDF
+   /// @brief get the filename of the generated PDF
    const QString &getOutFile() const;
 
-   static void initLib();     ///< initialize wkhtmltopdf
-   static void deinitLib();   ///< deinitialize wkhtmltopdf
+   static void initLib();     ///< @brief initialize wkhtmltopdf
+   static void deinitLib();   ///< @brief deinitialize wkhtmltopdf
 
-   /// set the password used to access the proxy server
+   /// @brief set the password used to access the proxy server
    static void setProxyPassword(const QString &password);
-   /// get the password used to access the proxy server
+   /// @brief get the password used to access the proxy server
    static const QString &getProxyPassword();
 
-   /// default target directory
+   /// target directory where we store PDF files
    static const IniFile::KeyValue INI_PDF_DIR;
-   /// default proxy hostname
+   /// proxy hostname
    static const IniFile::KeyValue INI_PROXY_HOST;
-   /// default proxy port
+   /// proxy port
    static const IniFile::KeyValue INI_PROXY_PORT;
-   /// default proxy username
+   /// proxy username
    static const IniFile::KeyValue INI_PROXY_USER;
-   /// default "use proxy: yes/no" setting
+   /// "use proxy: yes/no" setting
    static const IniFile::KeyValue INI_PROXY_ENABLE;
-   /// default top margin for wkhtmltopdf
+   /// top margin for wkhtmltopdf
    static const IniFile::KeyValue INI_MARGIN_TOP;
-   /// default bottom margin for wkhtmltopdf
+   /// bottom margin for wkhtmltopdf
    static const IniFile::KeyValue INI_MARGIN_BOTTOM;
-   /// default left margin for wkhtmltopdf
+   /// left margin for wkhtmltopdf
    static const IniFile::KeyValue INI_MARGIN_LEFT;
-   /// default right margin for wkhtmltopdf
+   /// right margin for wkhtmltopdf
    static const IniFile::KeyValue INI_MARGIN_RIGHT;
 
 private:
@@ -87,34 +88,35 @@ private:
 
    static QString m_proxyPassword;   ///< password proxy server
 
-   /// callback function for wkhtmltopdf to report errors
+   /// @brief callback for wkhtmltopdf to report errors
    static void logErrorCallback(wkhtmltopdf_converter *converter,
                          const char *message);
-   /// callback function for wkhtmltopdf to report warnings
+   /// @brief callback for wkhtmltopdf to report warnings
    static void logWarningCallback(wkhtmltopdf_converter *converter,
                          const char *message);
-   /// callback function for wkhtmltopdf to report progress of running capture
+   /// @brief callback for wkhtmltopdf to report progress of running capture
    static void emitProgressChanged(wkhtmltopdf_converter *converter,
                                   const int progress);
-   /// callback function for wkhtmltopdf to report capturing has finished
+   /// @brief callback for wkhtmltopdf to report capturing has finished
    static void emitIsFinished(wkhtmltopdf_converter *converter,
                               const int finished);
 
    IniFile m_settings;   ///< our configurable settings
 
    typedef QMap<wkhtmltopdf_converter*, HtmlToPdf*> CallbackMap;
-   /** 
-    * Stores relation between wkhtmltopdf and HtmlToPdf. We need this as
-    * bridge between static and non-static functions.
+   /** @brief relation between wkhtmltopdf and HtmlToPdf
+    *
+    * We need this as bridge between static and member functions so we
+    * can emit a signal from a wkhtmltopdf callback.
     */
    static CallbackMap m_callbackMap;
    /// to protect #m_callbackMap from concurrent write access
    static QMutex m_callbackMapMutex;
 
 signals:
-   /// signal capture has finished
+   /// @brief finished capturing website
    void pdfCreated(HtmlToPdf *myself);
-   /// signal progress of running capture
+   /// @brief get progress updates of running capture process
    void progressChanged(int percent);
 };
 

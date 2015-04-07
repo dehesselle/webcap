@@ -23,15 +23,16 @@
 #include <QString>
 #include <QVariant>
 
-/**
- * This is a small wrapper-class for QSettings to handle the basic
+/** @brief store settings with INI storage backend
+ *
+ * This is a wrapper-class for QSettings to handle the basic
  * parametrisation to use an INI file as storage backend. It is also
- * aware of portable/non-portable usage, checking the application
+ * aware of portable/non-portable usage, i.e. checking the application
  * directory for an INI file and using that instead of the
  * default location in the user's profile.
  *
- * We're not deriving from QInstance on purpose, see the explanation
- * in IniFile::IniFile().
+ * We're not deriving from QSettings on purpose to keep things simple.
+ * (See detailed explanation in the constructor.)
  */
 class IniFile
 {
@@ -39,57 +40,56 @@ public:
    IniFile();
    ~IniFile();
 
-   /**
-    * This is for the convenience of allowing us to have static key-value
-    * pairs of default INI settings within each class that works with an
-    * INI file.
+   /** @brief name of INI setting and its default value
+    *
+    * We use this to access a setting from an INI file as well as supplying
+    * a default value if that setting does not exist (e.g. on first program
+    * start with no pre-existing INI file). Best practice is to
+    * have each class that needs settings from an INI file define them as
+    * KeyValue types.
     */
    struct KeyValue
    {
-      const char *key;   ///< syntax is \c section.key
-      const QString value;
+      const char *key;       ///< syntax is @c section.key
+      const QString value;   ///< default value
    };
 
-   /** path of the INI file being used
+   /** @brief path of the INI file being used
     *
-    * This function is used to determine where we can put our "internal"
-    * files like logs and such. It will return one of two possible paths:
+    * This function will return one of two possible paths:
     * - a path inside the user's profile directory (i.e. normal mode) or
     * - the application directory (i.e. portable mode).
-    *
-    * Using this function we're making sure to behave accordingly wether
-    * we're running in portable mode or not.
     *
     * @return path of the INI file
     */
    QString getPath() const;
 
-   /** forwards to the respective QSettings method
+   /** @brief forwards to the respective QSettings method
     *
     * @see <a href="http://doc.qt.io/qt-5/qsettings.html#contains">
     * QSettings::contains</a>
     */
    bool contains(const QString &key) const;
-   /** forwards to the respective QSettings method
+   /** @brief forwards to the respective QSettings method
     * 
     * @see <a href="http://doc.qt.io/qt-5/qsettings.html#setValue">
     * QSettings::setValue</a>
     */
    void setValue(const QString &key, const QVariant &value);
-   /** forwards to the respective QSettings method
+   /** @brief forwards to the respective QSettings method
     * 
     * @see <a href="http://doc.qt.io/qt-5/qsettings.html#setValue">
     * QSettings::setValue</a>
     */
    void setValue(const KeyValue &keyValue, const QVariant &value = QVariant());
-   /** forwards to the respective QSettings method
+   /** @brief forwards to the respective QSettings method
     * 
     * @see <a href="http://doc.qt.io/qt-5/qsettings.html#value">
     * QSettings::value</a>
     */
    QVariant value(const QString &key,
                   const QVariant &defaultValue = QVariant()) const;
-   /** forwards to the respective QSettings method
+   /** @brief forwards to the respective QSettings method
     * 
     * @see <a href="http://doc.qt.io/qt-5/qsettings.html#value">
     * QSettings::value</a>

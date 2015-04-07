@@ -24,8 +24,7 @@
 #include <QDateTime>
 #include <QUrl>
 
-const IniFile::KeyValue ClipboardMonitor::INI_TIME_SPAN =
-      { "ClipboardMonitor/timeSpan", "400" };
+const IniFile::KeyValue ClipboardMonitor::INI_TIME_SPAN = { "ClipboardMonitor/timeSpan", "400" };
 
 ClipboardMonitor::ClipboardMonitor(QObject *parent) :
    QObject(parent),
@@ -81,14 +80,14 @@ void ClipboardMonitor::on_ClipboardChange()
 
          if (url == m_lastUrl)
             if (span < m_settings.value(INI_TIME_SPAN).toUInt())
-               /* We found our custom event: the same URL has been quickly
+               /* We found our "custom" event: the same URL has been quickly
                 * copied to the clipboard two times in a row.
                 */
                emit urlCaptured(m_clipboard->text());
             else
-               LOG(DEBUG) << "span=" << span;
+               LOG(DEBUG) << "span=" << span;   // not quick enough
          else
-            LOG(DEBUG) << "new URL";
+            LOG(DEBUG) << "new URL";   // not the same URL as before
 
          m_lastUrl = url;
          m_lastEvent = event;

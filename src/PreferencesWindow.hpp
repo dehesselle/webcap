@@ -36,22 +36,17 @@ public:
    ~PreferencesWindow();
 
 private slots:
-
-   void on_buttonTargetDir_clicked();
-
+   void on_buttonCancel_clicked();
    void on_buttonOk_clicked();
-
+   void on_buttonTargetDir_clicked();
    void on_proxyEnable_toggled(bool checked);
 
-   void on_buttonCancel_clicked();
-
 private:
-   Ui::PreferencesWindow *ui;
-
-   IniFile m_settings;
-
+   /// @brief read parameters from INI file
    void readSettings();
-
+   
+   Ui::PreferencesWindow *ui;
+   IniFile m_settings;   ///< our configurable settings
 };
 
 #endif // PREFERENCESWINDOW_HPP

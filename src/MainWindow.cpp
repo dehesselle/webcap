@@ -38,9 +38,7 @@
 
 const char *MainWindow::INI_GEOMETRY = "MainWindow/geometry";
 const char *MainWindow::INI_SPLITTER = "MainWindow/splitter";
-const IniFile::KeyValue MainWindow::INI_AUTO_PREVIEW = {
-   "MainWindow/autoPreview", "false"
-};
+const IniFile::KeyValue MainWindow::INI_AUTO_PREVIEW = { "MainWindow/autoPreview", "false" };
 
 MainWindow::MainWindow(QWidget *parent) :
    QMainWindow(parent),

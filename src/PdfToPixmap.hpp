@@ -22,7 +22,8 @@
 #include <QPixmap>
 #include <QString>
 
-/**
+/** @brief create pixmap from PDF
+ *
  * This is a small wrapper-class that uses
  * <a href="http://poppler.freedesktop.org/">Poppler</a> to convert a page
  * from a PDF file to a QPixmap.
@@ -35,14 +36,14 @@ class PdfToPixmap
 public:
    PdfToPixmap();
 
-   /**
+   /** @brief create pixmap
     * @param[in] file a PDF file
     * @return a single page of the PDF
     */
    const QPixmap createPixmap(const QString &file) const;
 
 protected:
-   int m_pageNo;    ///< page no to convert, first page = 0
+   int m_pageNo;    ///< page no. to convert (index starts with 0)
    double m_xRes;   ///< horizontal image resolution
    double m_yRes;   ///< vertical image resolution
 };
