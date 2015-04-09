@@ -9,16 +9,16 @@ Utilizing the power of [wkhtmltopdf](http://wkhtmltopdf.org), capturing a websit
 * Links stay alive and clickable inside the PDF.
 * The PDF file will most probably be less in size than a (high resolution) bitmap-based image. 
 
-_(Some restrictions/limitations may apply, see the manual.)_
+_(Some restrictions and/or limitations may apply, see the manual.)_
 
 Still, if you have a Mac, go use [Paparazzi!](https://derailer.org/paparazzi/) instead. (Yes, it's that good.)
 
 ## Download binaries
-I do supply release builds for the Windows 64bit platform. You need three things to get up and running:
+I do supply release builds for the Windows 7/8.x 64-bit platform. You need three things to get up and running:
 
-0. [WebCap v0.2 executable](http://rv1109.1blu.de/webcap/webcap_0.2.zip). This is a very small download and the one that you'll have to redownload with every new release. Scanned with [virustotal](https://www.virustotal.com/de/file/3b39f971e0b79b535a4e33263f8fe7a5c170faf87d347fb6d928f31719cc2d10/analysis/1427589386/).
-0. [WebCap base libraries](http://rv1109.1blu.de/webcap/webcap_base_libs.zip). This is a huge download and contains all but two DLLs that WebCap needs to run. This is supposed to be a one-time-only download unless stated otherwise. Extract this package into the same directory as the executable. Scanned with [virustotal](https://www.virustotal.com/de/file/88ef559ef977b1e096172a322bbe9df74aa84d3afcd3261ecfdc264ecb526ffd/analysis/1427589745/).
-0. [Visual C++ Redistributable Packages for Visual Studio 2013](http://www.microsoft.com/en-us/download/details.aspx?id=40784), also a one-time-only download. You need the 64bit version named `vcredist_x64.exe`. This package contains the two DLLs missing from the package above (`msvcp120.dll` and `msvcr120.dll`) that I do not distribute myself.
+0. [WebCap v0.3 executable](http://rv1109.1blu.de/webcap/webcap_0.3.rar). This is a very small download and the (only) one that you'll have to redownload with every new release. Scanned with [virustotal](https://www.virustotal.com/de/file/5c39973dea771426173845ef188e69f46bbf5831c2925e326ce7f70dd1025ed4/analysis/1428575844/).
+0. [WebCap base libraries v2](http://rv1109.1blu.de/webcap/webcap_base_libs_v2.rar). This is a huge download and contains all DLLs (dependencies) that WebCap needs to run _except_ wkhtmltopdf itself. It'll rarely change. Extract this package into the same directory as the executable. Scanned with [virustotal](https://www.virustotal.com/de/file/1e475e9c2dea86dfb0edd2b8100329fed99df11ce678b3f39bd074ce81913d1d/analysis/1428576089/).
+0. [wkhtmltopdf](http://wkhtmltopdf.org/downloads.html). Download the "Windows (MSVC2013) 64-bit" version and copy the `wkhtmltox.dll` into the same directory as the executable.
 
 ## Finally...
 More documentation can be found in the `MANUAL.md` file.

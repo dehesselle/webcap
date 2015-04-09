@@ -22,7 +22,7 @@ Besides that, there is not really a long list of features:
 * Dragging from the preview window will copy the selected PDF to the location where you drop it.
 
 ## Known issues and limitations
-* The overall size of WebCap and all required DLLs is... huge! The toolchain I'm using is pulling in a lot of dependencies by default and I'd have to recompile quite a few packages and tweak some options to reduce the number of files. I'll take a look into this eventually, but it is of lowest priority to me.
+* The overall size of the release build (WebCap and all required DLLs) is huge! The toolchain I'm using is pulling in a lot of dependencies by default and I'd have to recompile quite a few packages and tweak some options to reduce the number of files. I'll take a look into this eventually, but it is of lowest priority to me.
 * Although I'm using a GCC toolchain myself and not MSVC, WebCap only works with the MSVC version of wkhtmltopdf due to conflicting DLLs between their toolchain and mine. No biggie, but anyhow.
 * The GUI can and will freeze if a capture takes an elongated period of time. Granted, it's not pretty when you see the "program doesn't seem to respond"-message from Windows, but we'll have to live with it for the time being. It's a technical issue; we cannot decouple wkhtmltopdf from the main thread right now.
 * wkhtmltopdf does a great job, but like any other software, it is not perfect. So there's no guarantees that a successful capture yields in a PDF with 100% exactly the same layout/fonts/etc. like the original source material. YMMV on each and every website.
